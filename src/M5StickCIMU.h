@@ -2,6 +2,7 @@
 #define __M5StickCIMU_H__
 
 #include "I2C_MPU6886.h"
+#include "I2C_SH200Q.h"
 
 class M5StickCIMU {
   public:
@@ -14,7 +15,7 @@ class M5StickCIMU {
       if (imu_flag == 0) {
         imuType = IMU_MPU6886;
       } else {
-        //imu_flag = M5.Sh200Q.Init();
+        imu_flag = _sh200q->begin();
         if (imu_flag == 0) {
           imuType = IMU_SH200Q;
         } else {
@@ -28,6 +29,9 @@ class M5StickCIMU {
     void setMPU6886(I2C_MPU6886 *mpu6886) {
       _mpu6886 = mpu6886;
     }
+    void setSH200Q(I2C_SH200Q *sh200q) {
+      _sh200q = sh200q;
+    }
 
     void getGres();
     void getAres();
@@ -37,13 +41,25 @@ class M5StickCIMU {
     void getTempAdc(int16_t *t);
 
     void getAccelData(float *ax, float *ay, float *az) {
-      _mpu6886->getAccel(ax, ay, az);
+      if (imuType == IMU_MPU6886) {
+        _mpu6886->getAccel(ax, ay, az);
+      } else if (imuType == IMU_SH200Q) {
+        _sh200q->getAccel(ax, ay, az);
+      }
     }
     void getGyroData(float *gx, float *gy, float *gz) {
-      _mpu6886->getGyro(gx, gy, gz);
+      if (imuType == IMU_MPU6886) {
+        _mpu6886->getGyro(gx, gy, gz);
+      } else if (imuType == IMU_SH200Q) {
+        _sh200q->getGyro(gx, gy, gz);
+      }
     }
     void getTempData(float *t) {
-      _mpu6886->getTemp(t);
+      if (imuType == IMU_MPU6886) {
+        _mpu6886->getTemp(t);
+      } else if (imuType == IMU_SH200Q) {
+        _sh200q->getTemp(t);
+      }
     }
 
     void getAhrsData(float *pitch, float *roll, float *yaw);
@@ -54,7 +70,7 @@ class M5StickCIMU {
 
   private:
     I2C_MPU6886 *_mpu6886;
-    //I2C_SH200Q
+    I2C_SH200Q *_sh200q;
 };
 
 #endif
