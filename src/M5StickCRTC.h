@@ -1,5 +1,5 @@
-#ifndef __RTC_H__
-#define __RTC_H__
+#ifndef __M5StickCRTC_H__
+#define __M5StickCRTC_H__
 
 #include <Wire.h>
 #include "I2C_BM8563.h"

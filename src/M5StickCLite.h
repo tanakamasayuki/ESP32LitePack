@@ -6,6 +6,8 @@
 #include "M5StickCAXP192.h"
 #include "M5StickCRTC.h"
 #include "M5StickCButton.h"
+#include "M5StickCIMU.h"
+#include "M5StickCMPU6886.h"
 
 // Color
 #define BLACK               0x0000
@@ -67,6 +69,9 @@ class M5StickCLite {
       }
 
       Rtc.begin();
+
+      Mpu6886.setMPU6886(&mpu6886);
+      Imu.setMPU6886(&mpu6886);
     }
 
     void update() {
@@ -82,14 +87,15 @@ class M5StickCLite {
 
     M5StickCRTC Rtc;
 
-    //IMU Imu;
-    //CommUtil I2C = CommUtil();
-
-    //MPU6886 Mpu6886;
+    M5StickCIMU Imu;
+    M5StickCMPU6886 Mpu6886;
     //SH200Q Sh200Q;
+
+    //CommUtil I2C = CommUtil();
 
   private:
     const uint32_t DEBOUNCE_MS = 10;
+    I2C_MPU6886 mpu6886 = I2C_MPU6886(I2C_MPU6886_DEFAULT_ADDRESS, Wire1);
 };
 
 M5StickCLite M5;

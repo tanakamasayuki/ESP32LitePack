@@ -4,6 +4,7 @@ void setup() {
   M5.begin();
   M5.Axp.ScreenBreath(10);
   M5.Lcd.fillScreen(BLACK);
+  M5.Imu.Init();
 }
 
 void loop() {
@@ -56,6 +57,20 @@ void loop() {
   if(key){
     Serial.println(key);
   }  
+
+  float ax;
+  float ay;
+  float az;
+  float gx;
+  float gy;
+  float gz;
+  float t;
+
+  M5.Imu.getAccelData(&ax, &ay, &az);
+  M5.Imu.getGyroData(&gx, &gy, &gz);
+  M5.Imu.getTempData(&t);
+
+  Serial.printf("%f,%f,%f,%f,%f,%f,%f\n", ax, ay, az, gx, gy, gz, t);
 
   delay(100);
 }
