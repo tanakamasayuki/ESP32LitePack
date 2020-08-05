@@ -7,6 +7,9 @@ A lightweight compatibility library. You can use any combination of libraries.
 ### LovyanGFX(like M5Display)
 https://github.com/lovyan03/LovyanGFX
 
+### FastLED
+https://github.com/FastLED/FastLED
+
 ### I2C_AXP192(like AXP192)
 https://github.com/tanakamasayuki/I2C_AXP192
 
@@ -23,6 +26,9 @@ https://github.com/tanakamasayuki/I2C_MPU6886
 - [M5Stack BASIC](https://docs.m5stack.com/#/en/core/basic)
 - [M5Stack GRAY](https://docs.m5stack.com/#/en/core/gray)
 - [M5Stack FIRE](https://docs.m5stack.com/#/en/core/fire)
+- [M5Stack ATOM Lite](https://docs.m5stack.com/#/en/core/atom_lite)
+- [M5Stack ATOM Matrix](https://docs.m5stack.com/#/en/core/atom_matrix)
+- [M5Stack ATOM ECHO](https://docs.m5stack.com/#/en/atom/atomecho)
 
 ## Usage
 ```c
@@ -31,9 +37,16 @@ https://github.com/tanakamasayuki/I2C_MPU6886
 void setup() {
   M5.begin();
   M5.Axp.ScreenBreath(10);
-  M5.Lcd.fillScreen(BLACK);
+
+  Serial.printf("Lcd Width=%d, Height=%d\n", M5.Lcd.width(), M5.Lcd.height());
+
   M5.Imu.Init();
   Serial.printf("IMU : %d\n", M5.Imu.imuType);
+
+  M5.dis.drawpix(0, CRGB(255, 0, 0));
+  M5.dis.drawpix(2, CRGB(0, 255, 0));
+  M5.dis.drawpix(4, CRGB(0, 0, 255));
+  M5.dis.drawpix(6, CRGB::White);
 }
 
 void loop() {
@@ -41,36 +54,38 @@ void loop() {
 
   M5.update();
 
-  M5.Lcd.setCursor(0, 4, 1);
+  if (M5.useLcd()) {
+    M5.Lcd.setCursor(0, 4, 1);
 
-  M5.Lcd.printf("AXP192 Test\n");
-  M5.Lcd.printf("\n");
+    M5.Lcd.printf("AXP192 Test\n");
+    M5.Lcd.printf("\n");
 
-  M5.Lcd.printf("Battery\n");
-  M5.Lcd.printf(" State:%6d\n"  , M5.Axp.GetBatState());      // バッテリーが接続されているか(常に1のはず)
-  M5.Lcd.printf(" Warn :%6d\n"  , M5.Axp.GetWarningLevel());  // バッテリー残量警告 0:残あり, 1:残なし
-  M5.Lcd.printf(" Temp :%6.1f\n", M5.Axp.GetTempInAXP192());  // AXP192の内部温度
-  M5.Lcd.printf(" V(V) :%6.3f\n", M5.Axp.GetBatVoltage());    // バッテリー電圧(3.0V-4.2V程度)
-  M5.Lcd.printf(" I(mA):%6.1f\n", M5.Axp.GetBatCurrent());    // バッテリー電流(プラスが充電、マイナスが放電)
-  M5.Lcd.printf(" W(mW):%6.1f\n", M5.Axp.GetBatPower());      // バッテリー電力(W=V*abs(I))
+    M5.Lcd.printf("Battery\n");
+    M5.Lcd.printf(" State:%6d\n"  , M5.Axp.GetBatState());      // バッテリーが接続されているか(常に1のはず)
+    M5.Lcd.printf(" Warn :%6d\n"  , M5.Axp.GetWarningLevel());  // バッテリー残量警告 0:残あり, 1:残なし
+    M5.Lcd.printf(" Temp :%6.1f\n", M5.Axp.GetTempInAXP192());  // AXP192の内部温度
+    M5.Lcd.printf(" V(V) :%6.3f\n", M5.Axp.GetBatVoltage());    // バッテリー電圧(3.0V-4.2V程度)
+    M5.Lcd.printf(" I(mA):%6.1f\n", M5.Axp.GetBatCurrent());    // バッテリー電流(プラスが充電、マイナスが放電)
+    M5.Lcd.printf(" W(mW):%6.1f\n", M5.Axp.GetBatPower());      // バッテリー電力(W=V*abs(I))
 
-  M5.Lcd.printf("ASP\n");
-  M5.Lcd.printf(" V(V) :%6.3f\n", M5.Axp.GetAPSVoltage());    // ESP32に供給されている電圧
+    M5.Lcd.printf("ASP\n");
+    M5.Lcd.printf(" V(V) :%6.3f\n", M5.Axp.GetAPSVoltage());    // ESP32に供給されている電圧
 
-  M5.Lcd.printf("VBus(USB)\n");
-  M5.Lcd.printf(" V(V) :%6.3f\n", M5.Axp.GetVBusVoltage());   // USB電源からの電圧
-  M5.Lcd.printf(" I(mA):%6.1f\n", M5.Axp.GetVBusCurrent());   // USB電源からの電流
+    M5.Lcd.printf("VBus(USB)\n");
+    M5.Lcd.printf(" V(V) :%6.3f\n", M5.Axp.GetVBusVoltage());   // USB電源からの電圧
+    M5.Lcd.printf(" I(mA):%6.1f\n", M5.Axp.GetVBusCurrent());   // USB電源からの電流
 
-  M5.Lcd.printf("VIN(5V-In)\n");
-  M5.Lcd.printf(" V(V) :%6.3f\n", M5.Axp.GetVinVoltage());    // 5V IN端子からの電圧
-  M5.Lcd.printf(" I(mA):%6.1f\n", M5.Axp.GetVinCurrent());    // 5V IN端子からの電流
+    M5.Lcd.printf("VIN(5V-In)\n");
+    M5.Lcd.printf(" V(V) :%6.3f\n", M5.Axp.GetVinVoltage());    // 5V IN端子からの電圧
+    M5.Lcd.printf(" I(mA):%6.1f\n", M5.Axp.GetVinCurrent());    // 5V IN端子からの電流
 
-  RTC_TimeTypeDef RTC_TimeStruct;
-  RTC_DateTypeDef RTC_DateStruct;
-  M5.Rtc.GetTime(&RTC_TimeStruct);
-  M5.Rtc.GetData(&RTC_DateStruct);
-  M5.Lcd.printf("%04d-%02d-%02d\n", RTC_DateStruct.Year, RTC_DateStruct.Month, RTC_DateStruct.Date);
-  M5.Lcd.printf("%02d:%02d:%02d", RTC_TimeStruct.Hours, RTC_TimeStruct.Minutes, RTC_TimeStruct.Seconds);
+    RTC_TimeTypeDef RTC_TimeStruct;
+    RTC_DateTypeDef RTC_DateStruct;
+    M5.Rtc.GetTime(&RTC_TimeStruct);
+    M5.Rtc.GetData(&RTC_DateStruct);
+    M5.Lcd.printf("%04d-%02d-%02d\n", RTC_DateStruct.Year, RTC_DateStruct.Month, RTC_DateStruct.Date);
+    M5.Lcd.printf("%02d:%02d:%02d", RTC_TimeStruct.Hours, RTC_TimeStruct.Minutes, RTC_TimeStruct.Seconds);
+  }
 
   if (M5.BtnA.wasPressed()) {
     Serial.println("M5.BtnA.wasPressed()");

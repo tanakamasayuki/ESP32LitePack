@@ -5,7 +5,7 @@
 
 class M5StackAXP192 {
   public:
-    void  begin(bool disableLDO2 = false, bool disableLDO3 = false, bool disableRTC = false, bool disableDCDC1 = false, bool disableDCDC3 = false) {
+    void begin(bool disableLDO2 = false, bool disableLDO3 = false, bool disableRTC = false, bool disableDCDC1 = false, bool disableDCDC3 = false) {
       if (!enable) {
         return;
       }
@@ -31,7 +31,7 @@ class M5StackAXP192 {
       _axp192 = axp192;
     }
 
-    void  ScreenBreath(uint8_t brightness) {
+    void ScreenBreath(uint8_t brightness) {
       if (!enable) {
         return;
       }
@@ -42,7 +42,7 @@ class M5StackAXP192 {
       _axp192->setLDO2(1800 + brightness * 100);
     }
 
-    bool  GetBatState() {
+    bool GetBatState() {
       // TODO
       return true;
     }
@@ -50,16 +50,16 @@ class M5StackAXP192 {
     uint8_t GetInputPowerStatus();
     uint8_t GetBatteryChargingStatus();
 
-    void  DisableAllIRQ(void);
-    void  ClearAllIRQ(void);
-    void  EnablePressIRQ(bool short_press, bool long_press);
-    void  GetPressIRQ(bool *short_press, bool* long_press);
-    void  ClearPressIRQ(bool short_press, bool long_press);
+    void DisableAllIRQ(void);
+    void ClearAllIRQ(void);
+    void EnablePressIRQ(bool short_press, bool long_press);
+    void GetPressIRQ(bool *short_press, bool* long_press);
+    void ClearPressIRQ(bool short_press, bool long_press);
 
-    void  EnableCoulombcounter(void);
-    void  DisableCoulombcounter(void);
-    void  StopCoulombcounter(void);
-    void  ClearCoulombcounter(void);
+    void EnableCoulombcounter(void);
+    void DisableCoulombcounter(void);
+    void StopCoulombcounter(void);
+    void ClearCoulombcounter(void);
     uint32_t GetCoulombchargeData(void);
     uint32_t GetCoulombdischargeData(void);
     float GetCoulombData(void);
@@ -81,7 +81,7 @@ class M5StackAXP192 {
       }
 
       return _axp192->getPekPress();
-    }*/
+      }*/
 
     void SetSleep(void);
     void DeepSleep(uint64_t time_in_us = 0);
@@ -92,9 +92,9 @@ class M5StackAXP192 {
       return 0;
     }
 
-    void  SetChargeVoltage(uint8_t);
-    void  SetChargeCurrent(uint8_t);
-    void  SetVOff(uint8_t voltage);
+    void SetChargeVoltage(uint8_t);
+    void SetChargeCurrent(uint8_t);
+    void SetVOff(uint8_t voltage);
 
     float GetBatVoltage() {
       if (!enable) {

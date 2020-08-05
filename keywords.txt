@@ -20,6 +20,7 @@ Speaker	KEYWORD1
 BtnA	KEYWORD1
 BtnB	KEYWORD1
 BtnC	KEYWORD1
+dis	KEYWORD1
 
 #######################################
 # Methods and Functions (KEYWORD2)

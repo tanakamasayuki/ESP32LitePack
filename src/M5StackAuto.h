@@ -12,6 +12,7 @@
 #include "M5StackPower.h"
 #include "M5StackCommUtil.h"
 #include "M5StackSpeaker.h"
+#include "M5StackLED.h"
 
 // Color
 #define BLACK               0x0000
@@ -51,15 +52,17 @@ class M5StackAuto {
       if (SerialEnable) {
         Serial.begin(115200);
         Serial.flush();
-        delay(50);
+        delay(100);
         Serial.print("M5StackAuto");
       }
+
+      Wire1.begin(21, 22);
 
       // LCD INIT
       if (LCDEnable) {
         Lcd.begin();
         board = (int)Lcd.getBoard();
-        if (board == 1) {
+        if (board == LGFX::board_M5Stack) {
           // M5Stack
           Serial.print("(M5Stack)");
           M5_IR             = -1;
@@ -70,7 +73,7 @@ class M5StackAuto {
           SPEAKER_PIN       = 25;
           TONE_PIN_CHANNEL  =  0;
           TFCARD_CS_PIN     =  4;
-        } else if (board == 2) {
+        } else if (board == LGFX::board_M5StickC) {
           // M5StickC
           Serial.print("(M5StickC)");
           M5_IR             =  9;
@@ -84,7 +87,7 @@ class M5StackAuto {
 
           Axp.enable = true;
           Rtc.enable = true;
-        } else if (board == 3) {
+        } else if (board == LGFX::board_M5StickCPlus) {
           // M5StickC Plus
           Serial.print("(M5StickC Plus)");
           M5_IR             =  9;
@@ -98,18 +101,37 @@ class M5StackAuto {
 
           Axp.enable = true;
           Rtc.enable = true;
+        } else {
+          // ATOM
+          Serial.print("(M5AOM)");
+          M5_IR             = 12;
+          M5_LED            = -1;
+          BUTTON_A_PIN      = 39;
+          BUTTON_B_PIN      = -1;
+          BUTTON_C_PIN      = -1;
+          SPEAKER_PIN       = -1;
+          TONE_PIN_CHANNEL  = -1;
+          TFCARD_CS_PIN     = -1;
+
+          // LCD not use
+          _useLcd = false;
+          
+          // LED start
+          dis.begin();
+
+          // I2C Init
+          Wire1.begin(25, 21, 10000);
         }
       }
-
-      Wire1.begin(21, 22);
 
       // Power
       if (PowerEnable) {
         Axp.setAXP192(&axp192);
-        Axp.begin(board);
-        if (board == 2) {
-          // M5StickC LCD Rebegin
-          Lcd.begin();
+        Axp.begin();
+        if (board == LGFX::board_M5StickC) {
+          // M5StickC LCD clear
+          Lcd.drawPixel(0, 0, 0x0000);
+          Lcd.clear();
         }
       }
 
@@ -139,6 +161,10 @@ class M5StackAuto {
       Speaker.update();
     }
 
+    bool useLcd(){
+      return _useLcd;
+    }
+
     TFT_eSPI Lcd;
     M5StackAXP192 Axp = M5StackAXP192();
 
@@ -155,6 +181,7 @@ class M5StackAuto {
     M5StackCommUtil I2C = M5StackCommUtil(Wire);
     M5StackPOWER Power;
     M5StackSPEAKER Speaker;
+    M5StackLED dis;
 
     int board = 0;
 
@@ -163,6 +190,7 @@ class M5StackAuto {
     I2C_MPU6886 mpu6886 = I2C_MPU6886(I2C_MPU6886_DEFAULT_ADDRESS, Wire1);
     I2C_SH200Q sh200q = I2C_SH200Q(I2C_SH200Q_DEFAULT_ADDRESS, Wire1);
     I2C_AXP192 axp192 = I2C_AXP192(I2C_AXP192_DEFAULT_ADDRESS, Wire1);
+    bool _useLcd = true;
 };
 
 M5StackAuto M5;
