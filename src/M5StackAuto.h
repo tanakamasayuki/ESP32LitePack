@@ -9,6 +9,9 @@
 #include "M5StackIMU.h"
 #include "M5StackMPU6886.h"
 #include "M5StackSH200Q.h"
+#include "M5StackPower.h"
+#include "M5StackCommUtil.h"
+#include "M5StackSpeaker.h"
 
 // Color
 #define BLACK               0x0000
@@ -74,7 +77,7 @@ class M5StackAuto {
           M5_LED            = 10;
           BUTTON_A_PIN      = 37;
           BUTTON_B_PIN      = 39;
-          BUTTON_C_PIN      = -1;
+          BUTTON_C_PIN      = 99;
           SPEAKER_PIN       = -1;
           TONE_PIN_CHANNEL  = -1;
           TFCARD_CS_PIN     = -1;
@@ -88,7 +91,7 @@ class M5StackAuto {
           M5_LED            = 10;
           BUTTON_A_PIN      = 37;
           BUTTON_B_PIN      = 39;
-          BUTTON_C_PIN      = -1;
+          BUTTON_C_PIN      = 99;
           SPEAKER_PIN       =  2;
           TONE_PIN_CHANNEL  =  0;
           TFCARD_CS_PIN     = -1;
@@ -102,7 +105,12 @@ class M5StackAuto {
 
       // Power
       if (PowerEnable) {
+        Axp.setAXP192(&axp192);
         Axp.begin(board);
+        if (board == 2) {
+          // M5StickC LCD Rebegin
+          //Lcd.begin();
+        }
       }
 
       Rtc.begin();
@@ -114,7 +122,10 @@ class M5StackAuto {
 
       BtnA.begin(BUTTON_A_PIN, true, DEBOUNCE_MS);
       BtnB.begin(BUTTON_B_PIN, true, DEBOUNCE_MS);
+      BtnC.setAXP192(&axp192);
       BtnC.begin(BUTTON_C_PIN, true, DEBOUNCE_MS);
+
+      Speaker.setPin(SPEAKER_PIN, TONE_PIN_CHANNEL);
 
       if (SerialEnable) {
         Serial.println(" initializing...OK");
@@ -125,6 +136,7 @@ class M5StackAuto {
       BtnA.read();
       BtnB.read();
       BtnC.read();
+      Speaker.update();
     }
 
     TFT_eSPI Lcd;
@@ -140,13 +152,17 @@ class M5StackAuto {
     M5StackMPU6886 Mpu6886;
     M5StackSH200Q Sh200Q;
 
-    //CommUtil I2C = CommUtil();
+    M5StackCommUtil I2C = M5StackCommUtil(Wire);
+    M5StackPOWER Power;
+    M5StackSPEAKER Speaker;
+
     int board = 0;
 
   private:
     const uint32_t DEBOUNCE_MS = 10;
     I2C_MPU6886 mpu6886 = I2C_MPU6886(I2C_MPU6886_DEFAULT_ADDRESS, Wire1);
     I2C_SH200Q sh200q = I2C_SH200Q(I2C_SH200Q_DEFAULT_ADDRESS, Wire1);
+    I2C_AXP192 axp192 = I2C_AXP192(I2C_AXP192_DEFAULT_ADDRESS, Wire1);
 };
 
 M5StackAuto M5;

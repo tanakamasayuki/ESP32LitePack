@@ -24,7 +24,11 @@ class M5StackAXP192 {
         .GPIO3  = -1,
         .GPIO4  = -1,
       };
-      axp192.begin(initDef);
+      _axp192->begin(initDef);
+    }
+
+    void setAXP192(I2C_AXP192 *axp192) {
+      _axp192 = axp192;
     }
 
     void  ScreenBreath(uint8_t brightness) {
@@ -35,7 +39,7 @@ class M5StackAXP192 {
       if (brightness > 12) {
         brightness = 12;
       }
-      axp192.setLDO2(1800 + brightness * 100);
+      _axp192->setLDO2(1800 + brightness * 100);
     }
 
     bool  GetBatState() {
@@ -70,13 +74,14 @@ class M5StackAXP192 {
     uint16_t GetVusbinData(void) __attribute__((deprecated));
     uint16_t GetIusbinData(void) __attribute__((deprecated));
     uint16_t GetVapsData(void) __attribute__((deprecated));
-    uint8_t GetBtnPress(void) {
+    uint8_t GetBtnPress(void); // Use BtnC
+    /*{
       if (!enable) {
         return 0;
       }
 
-      return axp192.getPekPress();
-    }
+      return _axp192->getPekPress();
+    }*/
 
     void SetSleep(void);
     void DeepSleep(uint64_t time_in_us = 0);
@@ -95,61 +100,61 @@ class M5StackAXP192 {
       if (!enable) {
         return 0;
       }
-      return axp192.getBatteryVoltage() / 1000.0;
+      return _axp192->getBatteryVoltage() / 1000.0;
     }
     float GetBatCurrent() {
       if (!enable) {
         return 0;
       }
-      return axp192.getBatteryChargeCurrent() - axp192.getBatteryDischargeCurrent();
+      return _axp192->getBatteryChargeCurrent() - _axp192->getBatteryDischargeCurrent();
     }
     float GetVinVoltage() {
       if (!enable) {
         return 0;
       }
-      return axp192.getAcinVolatge() / 1000.0;
+      return _axp192->getAcinVolatge() / 1000.0;
     }
     float GetVinCurrent() {
       if (!enable) {
         return 0;
       }
-      return axp192.getAcinCurrent();
+      return _axp192->getAcinCurrent();
     }
     float GetVBusVoltage() {
       if (!enable) {
         return 0;
       }
-      return axp192.getVbusVoltage() / 1000.0;
+      return _axp192->getVbusVoltage() / 1000.0;
     }
     float GetVBusCurrent() {
       if (!enable) {
         return 0;
       }
-      return axp192.getVbusCurrent();
+      return _axp192->getVbusCurrent();
     }
     float GetTempInAXP192() {
       if (!enable) {
         return 0;
       }
-      return axp192.getInternalTemperature();
+      return _axp192->getInternalTemperature();
     }
     float GetBatPower() {
       if (!enable) {
         return 0;
       }
-      return axp192.getBatteryPower();
+      return _axp192->getBatteryPower();
     }
     float GetBatChargeCurrent() {
       if (!enable) {
         return 0;
       }
-      return axp192.getBatteryChargeCurrent();
+      return _axp192->getBatteryChargeCurrent();
     }
     float GetAPSVoltage() {
       if (!enable) {
         return 0;
       }
-      return axp192.getApsVoltage() / 1000.0;
+      return _axp192->getApsVoltage() / 1000.0;
     }
     float GetBatCoulombInput();
     float GetBatCoulombOut();
@@ -168,7 +173,7 @@ class M5StackAXP192 {
       if (!enable) {
         return;
       }
-      axp192.powerOff();
+      _axp192->powerOff();
     }
 
     void Read6BytesStorage(uint8_t *bufPtr);
@@ -177,7 +182,7 @@ class M5StackAXP192 {
     int enable = 0;
 
   private:
-    I2C_AXP192 axp192 = I2C_AXP192(I2C_AXP192_DEFAULT_ADDRESS, Wire1);
+    I2C_AXP192 *_axp192;
 };
 
 #endif

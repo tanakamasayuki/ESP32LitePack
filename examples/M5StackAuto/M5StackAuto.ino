@@ -9,6 +9,8 @@ void setup() {
 }
 
 void loop() {
+  static int vol = 11;
+
   M5.update();
 
   M5.Lcd.setCursor(0, 4, 1);
@@ -44,12 +46,19 @@ void loop() {
 
   if (M5.BtnA.wasPressed()) {
     Serial.println("M5.BtnA.wasPressed()");
+    M5.Speaker.tone(1000, 100);
   }
   if (M5.BtnB.wasPressed()) {
     Serial.println("M5.BtnB.wasPressed()");
+    vol--;
+    M5.Speaker.setVolume(vol);
+    Serial.printf("vol = %d\n", vol);
   }
   if (M5.BtnC.wasPressed()) {
     Serial.println("M5.BtnC.wasPressed()");
+    vol++;
+    M5.Speaker.setVolume(vol);
+    Serial.printf("vol = %d\n", vol);
   }
   if (M5.BtnA.wasReleased()) {
     Serial.println("M5.BtnA.wasReleased()");
@@ -59,10 +68,6 @@ void loop() {
   }
   if (M5.BtnC.wasReleased()) {
     Serial.println("M5.BtnC.wasReleased()");
-  }
-  int key = M5.Axp.GetBtnPress();
-  if (key) {
-    Serial.println(key);
   }
 
   if (M5.Imu.imuType != 0) {
