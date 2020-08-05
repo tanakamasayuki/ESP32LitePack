@@ -109,7 +109,7 @@ class M5StackAuto {
         Axp.begin(board);
         if (board == 2) {
           // M5StickC LCD Rebegin
-          //Lcd.begin();
+          Lcd.begin();
         }
       }
 
