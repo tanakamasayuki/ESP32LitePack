@@ -1,11 +1,15 @@
-#ifndef __M5StickCAXP192_H__
-#define __M5StickCAXP192_H__
+#ifndef __M5StackAXP192_H__
+#define __M5StackAXP192_H__
 
 #include <I2C_AXP192.h>
 
-class M5StickCAXP192 {
+class M5StackAXP192 {
   public:
     void  begin(bool disableLDO2 = false, bool disableLDO3 = false, bool disableRTC = false, bool disableDCDC1 = false, bool disableDCDC3 = false) {
+      if (!enable) {
+        return;
+      }
+
       I2C_AXP192_InitDef initDef = {
         .EXTEN  = true,
         .BACKUP = true,
@@ -24,6 +28,10 @@ class M5StickCAXP192 {
     }
 
     void  ScreenBreath(uint8_t brightness) {
+      if (!enable) {
+        return;
+      }
+
       if (brightness > 12) {
         brightness = 12;
       }
@@ -62,7 +70,11 @@ class M5StickCAXP192 {
     uint16_t GetVusbinData(void) __attribute__((deprecated));
     uint16_t GetIusbinData(void) __attribute__((deprecated));
     uint16_t GetVapsData(void) __attribute__((deprecated));
-    uint8_t GetBtnPress(void){
+    uint8_t GetBtnPress(void) {
+      if (!enable) {
+        return 0;
+      }
+
       return axp192.getPekPress();
     }
 
@@ -80,33 +92,63 @@ class M5StickCAXP192 {
     void  SetVOff(uint8_t voltage);
 
     float GetBatVoltage() {
+      if (!enable) {
+        return 0;
+      }
       return axp192.getBatteryVoltage() / 1000.0;
     }
     float GetBatCurrent() {
+      if (!enable) {
+        return 0;
+      }
       return axp192.getBatteryChargeCurrent() - axp192.getBatteryDischargeCurrent();
     }
     float GetVinVoltage() {
+      if (!enable) {
+        return 0;
+      }
       return axp192.getAcinVolatge() / 1000.0;
     }
     float GetVinCurrent() {
+      if (!enable) {
+        return 0;
+      }
       return axp192.getAcinCurrent();
     }
     float GetVBusVoltage() {
+      if (!enable) {
+        return 0;
+      }
       return axp192.getVbusVoltage() / 1000.0;
     }
     float GetVBusCurrent() {
+      if (!enable) {
+        return 0;
+      }
       return axp192.getVbusCurrent();
     }
     float GetTempInAXP192() {
+      if (!enable) {
+        return 0;
+      }
       return axp192.getInternalTemperature();
     }
     float GetBatPower() {
+      if (!enable) {
+        return 0;
+      }
       return axp192.getBatteryPower();
     }
     float GetBatChargeCurrent() {
+      if (!enable) {
+        return 0;
+      }
       return axp192.getBatteryChargeCurrent();
     }
     float GetAPSVoltage() {
+      if (!enable) {
+        return 0;
+      }
       return axp192.getApsVoltage() / 1000.0;
     }
     float GetBatCoulombInput();
@@ -123,11 +165,16 @@ class M5StickCAXP192 {
     void SetAdcRate(uint8_t rate);
 
     void PowerOff() {
+      if (!enable) {
+        return;
+      }
       axp192.powerOff();
     }
 
     void Read6BytesStorage(uint8_t *bufPtr);
     void Write6BytesStorage(uint8_t *bufPtr);
+
+    int enable = 0;
 
   private:
     I2C_AXP192 axp192 = I2C_AXP192(I2C_AXP192_DEFAULT_ADDRESS, Wire1);

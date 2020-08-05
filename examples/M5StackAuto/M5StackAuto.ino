@@ -1,15 +1,16 @@
-#include "M5StickCLite.h"
+#include "M5StackAuto.h"
 
 void setup() {
   M5.begin();
   M5.Axp.ScreenBreath(10);
   M5.Lcd.fillScreen(BLACK);
   M5.Imu.Init();
+  Serial.printf("IMU : %d\n", M5.Imu.imuType);
 }
 
 void loop() {
   M5.update();
-  
+
   M5.Lcd.setCursor(0, 4, 1);
 
   M5.Lcd.printf("AXP192 Test\n");
@@ -41,36 +42,44 @@ void loop() {
   M5.Lcd.printf("%04d-%02d-%02d\n", RTC_DateStruct.Year, RTC_DateStruct.Month, RTC_DateStruct.Date);
   M5.Lcd.printf("%02d:%02d:%02d", RTC_TimeStruct.Hours, RTC_TimeStruct.Minutes, RTC_TimeStruct.Seconds);
 
-  if(M5.BtnA.wasPressed()){
+  if (M5.BtnA.wasPressed()) {
     Serial.println("M5.BtnA.wasPressed()");
   }
-  if(M5.BtnB.wasPressed()){
+  if (M5.BtnB.wasPressed()) {
     Serial.println("M5.BtnB.wasPressed()");
   }
-  if(M5.BtnA.wasReleased()){
+  if (M5.BtnC.wasPressed()) {
+    Serial.println("M5.BtnC.wasPressed()");
+  }
+  if (M5.BtnA.wasReleased()) {
     Serial.println("M5.BtnA.wasReleased()");
   }
-  if(M5.BtnB.wasReleased()){
+  if (M5.BtnB.wasReleased()) {
     Serial.println("M5.BtnB.wasReleased()");
   }
+  if (M5.BtnC.wasReleased()) {
+    Serial.println("M5.BtnC.wasReleased()");
+  }
   int key = M5.Axp.GetBtnPress();
-  if(key){
+  if (key) {
     Serial.println(key);
-  }  
+  }
 
-  float ax;
-  float ay;
-  float az;
-  float gx;
-  float gy;
-  float gz;
-  float t;
+  if (M5.Imu.imuType != 0) {
+    float ax;
+    float ay;
+    float az;
+    float gx;
+    float gy;
+    float gz;
+    float t;
 
-  M5.Imu.getAccelData(&ax, &ay, &az);
-  M5.Imu.getGyroData(&gx, &gy, &gz);
-  M5.Imu.getTempData(&t);
+    M5.Imu.getAccelData(&ax, &ay, &az);
+    M5.Imu.getGyroData(&gx, &gy, &gz);
+    M5.Imu.getTempData(&t);
 
-  Serial.printf("%f,%f,%f,%f,%f,%f,%f\n", ax, ay, az, gx, gy, gz, t);
+    Serial.printf(" %f,%f,%f,%f,%f,%f,%f\n", ax, ay, az, gx, gy, gz, t);
+  }
 
   delay(100);
 }

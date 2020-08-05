@@ -1,10 +1,10 @@
-#ifndef __M5StickCIMU_H__
-#define __M5StickCIMU_H__
+#ifndef __M5StackIMU_H__
+#define __M5StackIMU_H__
 
 #include "I2C_MPU6886.h"
 #include "I2C_SH200Q.h"
 
-class M5StickCIMU {
+class M5StackIMU {
   public:
     enum ImuType {
       IMU_UNKNOWN = 0, IMU_SH200Q, IMU_MPU6886
@@ -45,6 +45,10 @@ class M5StickCIMU {
         _mpu6886->getAccel(ax, ay, az);
       } else if (imuType == IMU_SH200Q) {
         _sh200q->getAccel(ax, ay, az);
+      } else {
+        *ax = 0;
+        *ay = 0;
+        *az = 0;
       }
     }
     void getGyroData(float *gx, float *gy, float *gz) {
@@ -52,6 +56,10 @@ class M5StickCIMU {
         _mpu6886->getGyro(gx, gy, gz);
       } else if (imuType == IMU_SH200Q) {
         _sh200q->getGyro(gx, gy, gz);
+      } else {
+        *gx = 0;
+        *gy = 0;
+        *gz = 0;
       }
     }
     void getTempData(float *t) {
@@ -59,6 +67,8 @@ class M5StickCIMU {
         _mpu6886->getTemp(t);
       } else if (imuType == IMU_SH200Q) {
         _sh200q->getTemp(t);
+      } else {
+        *t = 0;
       }
     }
 

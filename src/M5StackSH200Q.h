@@ -1,9 +1,9 @@
-#ifndef __M5StickCMPU6886_H__
-#define __M5StickCMPU6886_H__
+#ifndef __M5StackSH200Q_H__
+#define __M5StackSH200Q_H__
 
-#include "I2C_MPU6886.h"
+#include "I2C_SH200Q.h"
 
-class M5StickCMPU6886 {
+class M5StackSH200Q {
   public:
     enum Ascale {
       AFS_2G = 0,
@@ -19,8 +19,8 @@ class M5StickCMPU6886 {
       GFS_2000DPS
     };
 
-    void setMPU6886(I2C_MPU6886 *mpu6886) {
-      imu = mpu6886;
+    void setSH200Q(I2C_SH200Q *SH200Q) {
+      imu = SH200Q;
     }
 
     int Init(void) {
@@ -47,7 +47,7 @@ class M5StickCMPU6886 {
     void getAhrsData(float *pitch, float *roll, float *yaw);
 
   private:
-    I2C_MPU6886 *imu;
+    I2C_SH200Q *imu;
 };
 
 #endif

@@ -1,12 +1,11 @@
 #######################################
-# Syntax Coloring Map For M5StickC
+# Syntax Coloring Map For M5StackAuto
 #######################################
 
 #######################################
 # Library (KEYWORD3)
 #######################################
 
-M5StickC	KEYWORD3
 M5	KEYWORD3
 m5	KEYWORD3
 
@@ -15,6 +14,8 @@ m5	KEYWORD3
 #######################################
 
 Lcd	KEYWORD1
+Rtc	KEYWORD1
+Imu	KEYWORD1
 Speaker	KEYWORD1
 BtnA	KEYWORD1
 BtnB	KEYWORD1
