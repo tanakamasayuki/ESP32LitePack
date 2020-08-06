@@ -101,6 +101,21 @@ class M5StackAuto {
 
           Axp.enable = true;
           Rtc.enable = true;
+#if 0
+        } else if (board == LGFX::board_TTGO_TWatch) {
+          // TTGO T-Watch
+          Serial.print("(LILYGO TTGO T-Watch)");
+          M5_IR             = -1;
+          M5_LED            = -1;
+          BUTTON_A_PIN      = 36;
+          BUTTON_B_PIN      = -1;
+          BUTTON_C_PIN      = -1;
+          SPEAKER_PIN       = -1;
+          TONE_PIN_CHANNEL  = -1;
+          TFCARD_CS_PIN     = -1;
+
+          Rtc.enable = true;
+#endif
         } else {
           // ATOM
           Serial.print("(M5AOM)");
@@ -147,7 +162,7 @@ class M5StackAuto {
       BtnC.setAXP192(&axp192);
       BtnC.begin(BUTTON_C_PIN, true, DEBOUNCE_MS);
 
-      Speaker.setPin(SPEAKER_PIN, TONE_PIN_CHANNEL);
+      Beep.setPin(SPEAKER_PIN, TONE_PIN_CHANNEL);
 
       if (SerialEnable) {
         Serial.println(" initializing...OK");
@@ -158,7 +173,7 @@ class M5StackAuto {
       BtnA.read();
       BtnB.read();
       BtnC.read();
-      Speaker.update();
+      Beep.update();
     }
 
     bool useLcd(){
@@ -180,7 +195,7 @@ class M5StackAuto {
 
     M5StackCommUtil I2C = M5StackCommUtil(Wire);
     M5StackPOWER Power;
-    M5StackSPEAKER Speaker;
+    M5StackSPEAKER Beep;
     M5StackLED dis;
 
     int board = 0;

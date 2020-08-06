@@ -21,8 +21,8 @@ https://github.com/tanakamasayuki/I2C_MPU6886
 
 ## Support Devices
 
-- [M5Stick](https://docs.m5stack.com/#/en/core/m5stickc)
-- [M5Stick Plus](https://docs.m5stack.com/#/en/core/m5stickc_plus)
+- [M5StickC](https://docs.m5stack.com/#/en/core/m5stickc)
+- [M5StickC Plus](https://docs.m5stack.com/#/en/core/m5stickc_plus)
 - [M5Stack BASIC](https://docs.m5stack.com/#/en/core/basic)
 - [M5Stack GRAY](https://docs.m5stack.com/#/en/core/gray)
 - [M5Stack FIRE](https://docs.m5stack.com/#/en/core/fire)
