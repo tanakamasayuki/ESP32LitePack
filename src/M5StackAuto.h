@@ -156,6 +156,7 @@ class M5StackAuto {
       Sh200Q.setSH200Q(&sh200q);
       Imu.setMPU6886(&mpu6886);
       Imu.setSH200Q(&sh200q);
+      Imu.setBMA423(&bma423);
 
       BtnA.begin(BUTTON_A_PIN, true, DEBOUNCE_MS);
       BtnB.begin(BUTTON_B_PIN, true, DEBOUNCE_MS);
@@ -204,6 +205,7 @@ class M5StackAuto {
     const uint32_t DEBOUNCE_MS = 10;
     I2C_MPU6886 mpu6886 = I2C_MPU6886(I2C_MPU6886_DEFAULT_ADDRESS, Wire1);
     I2C_SH200Q sh200q = I2C_SH200Q(I2C_SH200Q_DEFAULT_ADDRESS, Wire1);
+    I2C_BMA423 bma423 = I2C_BMA423(I2C_BMA423_DEFAULT_ADDRESS, Wire1);
     I2C_AXP192 axp192 = I2C_AXP192(I2C_AXP192_DEFAULT_ADDRESS, Wire1);
     bool _useLcd = true;
 };

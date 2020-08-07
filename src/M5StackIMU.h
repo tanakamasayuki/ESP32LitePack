@@ -3,27 +3,38 @@
 
 #include "I2C_MPU6886.h"
 #include "I2C_SH200Q.h"
+#include "I2C_BMA423.h"
 
 class M5StackIMU {
   public:
     enum ImuType {
-      IMU_UNKNOWN = 0, IMU_SH200Q, IMU_MPU6886
+      IMU_UNKNOWN   =   0,
+      IMU_SH200Q    =   1,
+      IMU_MPU6886   =   2,
+      IMU_BMA423    = 101,
     };
 
     int Init(void) {
       int imu_flag = _mpu6886->begin();
       if (imu_flag == 0) {
         imuType = IMU_MPU6886;
-      } else {
-        imu_flag = _sh200q->begin();
-        if (imu_flag == 0) {
-          imuType = IMU_SH200Q;
-        } else {
-          imuType = IMU_UNKNOWN;
-          return -1;
-        }
+        return 0;
       }
-      return 0;
+
+      imu_flag = _sh200q->begin();
+      if (imu_flag == 0) {
+        imuType = IMU_SH200Q;
+        return 0;
+      }
+
+      imu_flag = _bma423->begin();
+      if (imu_flag == 0) {
+        imuType = IMU_BMA423;
+        return 0;
+      }
+
+      imuType = IMU_UNKNOWN;
+      return -1;
     }
 
     void setMPU6886(I2C_MPU6886 *mpu6886) {
@@ -31,6 +42,9 @@ class M5StackIMU {
     }
     void setSH200Q(I2C_SH200Q *sh200q) {
       _sh200q = sh200q;
+    }
+    void setBMA423(I2C_BMA423 *bma423) {
+      _bma423 = bma423;
     }
 
     void getGres();
@@ -45,6 +59,8 @@ class M5StackIMU {
         _mpu6886->getAccel(ax, ay, az);
       } else if (imuType == IMU_SH200Q) {
         _sh200q->getAccel(ax, ay, az);
+      } else if (imuType == IMU_BMA423) {
+        _bma423->getAccel(ax, ay, az);
       } else {
         *ax = 0;
         *ay = 0;
@@ -81,6 +97,7 @@ class M5StackIMU {
   private:
     I2C_MPU6886 *_mpu6886;
     I2C_SH200Q *_sh200q;
+    I2C_BMA423 *_bma423;
 };
 
 #endif
