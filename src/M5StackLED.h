@@ -47,9 +47,18 @@ class M5StackLED {
       }
     }
 
-    void animation(uint8_t *buffptr, uint8_t amspeed, uint8_t ammode, int64_t amcount = -1);
-    void displaybuff(uint8_t *buffptr, int8_t offsetx = 0, int8_t offsety = 0);
-    void MoveDisPlayBuff(int8_t offsetx = 0, int8_t offsety = 0);
+    void animation(uint8_t *buffptr, uint8_t amspeed, uint8_t ammode, int64_t amcount = -1) {
+      // TODO
+      ESP_LOGE("M5StackLED", "Not Support");
+    }
+    void displaybuff(uint8_t *buffptr, int8_t offsetx = 0, int8_t offsety = 0) {
+      // TODO
+      ESP_LOGE("M5StackLED", "Not Support");
+    }
+    void MoveDisPlayBuff(int8_t offsetx = 0, int8_t offsety = 0) {
+      // TODO
+      ESP_LOGE("M5StackLED", "Not Support");
+    }
 
     void setBrightness(uint8_t brightness) {
       if (20 < brightness) {

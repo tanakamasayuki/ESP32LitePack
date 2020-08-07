@@ -52,11 +52,18 @@ class M5StackAuto {
       if (SerialEnable) {
         Serial.begin(115200);
         Serial.flush();
-        delay(100);
+        delay(200);
         Serial.print("M5StackAuto");
       }
 
-      Wire1.begin(21, 22);
+      Axp.setAXP192(&axp192);
+      Mpu6886.setMPU6886(&mpu6886);
+      Sh200Q.setSH200Q(&sh200q);
+      Imu.setMPU6886(&mpu6886);
+      Imu.setSH200Q(&sh200q);
+      Imu.setBMA423(&bma423);
+      Power.setIP5306(&ip5306);
+      BtnC.setAXP192(&axp192);
 
       // LCD INIT
       if (LCDEnable) {
@@ -130,7 +137,7 @@ class M5StackAuto {
 
           // LCD not use
           _useLcd = false;
-          
+
           // LED start
           dis.begin();
 
@@ -139,12 +146,12 @@ class M5StackAuto {
         }
       }
 
+      Wire1.begin(21, 22);
+
       // Power
       if (PowerEnable) {
-        Axp.setAXP192(&axp192);
         Axp.begin();
-        if (board == LGFX::board_M5StickC) {
-          // M5StickC LCD clear
+        if (_useLcd) {
           Lcd.drawPixel(0, 0, 0x0000);
           Lcd.clear();
         }
@@ -152,15 +159,8 @@ class M5StackAuto {
 
       Rtc.begin();
 
-      Mpu6886.setMPU6886(&mpu6886);
-      Sh200Q.setSH200Q(&sh200q);
-      Imu.setMPU6886(&mpu6886);
-      Imu.setSH200Q(&sh200q);
-      Imu.setBMA423(&bma423);
-
       BtnA.begin(BUTTON_A_PIN, true, DEBOUNCE_MS);
       BtnB.begin(BUTTON_B_PIN, true, DEBOUNCE_MS);
-      BtnC.setAXP192(&axp192);
       BtnC.begin(BUTTON_C_PIN, true, DEBOUNCE_MS);
 
       Beep.setPin(SPEAKER_PIN, TONE_PIN_CHANNEL);
@@ -177,7 +177,7 @@ class M5StackAuto {
       Beep.update();
     }
 
-    bool useLcd(){
+    bool useLcd() {
       return _useLcd;
     }
 
@@ -207,6 +207,7 @@ class M5StackAuto {
     I2C_SH200Q sh200q = I2C_SH200Q(I2C_SH200Q_DEFAULT_ADDRESS, Wire1);
     I2C_BMA423 bma423 = I2C_BMA423(I2C_BMA423_DEFAULT_ADDRESS, Wire1);
     I2C_AXP192 axp192 = I2C_AXP192(I2C_AXP192_DEFAULT_ADDRESS, Wire1);
+    I2C_IP5306 ip5306 = I2C_IP5306(I2C_IP5306_DEFAULT_ADDRESS, Wire1);
     bool _useLcd = true;
 };
 

@@ -4,15 +4,13 @@
 #include <Wire.h>
 #include "I2C_BM8563.h"
 
-typedef struct
-{
+typedef struct {
   uint8_t Hours;
   uint8_t Minutes;
   uint8_t Seconds;
 } RTC_TimeTypeDef;
 
-typedef struct
-{
+typedef struct {
   uint8_t WeekDay;
   uint8_t Month;
   uint8_t Date;
@@ -27,7 +25,10 @@ class M5StackRTC {
       }
       rtc.begin();
     }
-    void GetBm8563Time(void);
+    void GetBm8563Time(void) {
+      // TODO
+      ESP_LOGE("RTC", "Not Support");
+    }
 
     void SetTime(RTC_TimeTypeDef* RTC_TimeStruct) {
       if (!enable) {

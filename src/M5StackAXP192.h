@@ -44,57 +44,161 @@ class M5StackAXP192 {
 
     bool GetBatState() {
       // TODO
+      ESP_LOGE("AXP192", "Not Support");
       return true;
     }
 
-    uint8_t GetInputPowerStatus();
-    uint8_t GetBatteryChargingStatus();
-
-    void DisableAllIRQ(void);
-    void ClearAllIRQ(void);
-    void EnablePressIRQ(bool short_press, bool long_press);
-    void GetPressIRQ(bool *short_press, bool* long_press);
-    void ClearPressIRQ(bool short_press, bool long_press);
-
-    void EnableCoulombcounter(void);
-    void DisableCoulombcounter(void);
-    void StopCoulombcounter(void);
-    void ClearCoulombcounter(void);
-    uint32_t GetCoulombchargeData(void);
-    uint32_t GetCoulombdischargeData(void);
-    float GetCoulombData(void);
-
-    uint16_t GetVbatData(void) __attribute__((deprecated));
-    uint16_t GetIchargeData(void) __attribute__((deprecated));
-    uint16_t GetIdischargeData(void) __attribute__((deprecated));
-    uint16_t GetTempData(void) __attribute__((deprecated));
-    uint32_t GetPowerbatData(void) __attribute__((deprecated));
-    uint16_t GetVinData(void) __attribute__((deprecated));
-    uint16_t GetIinData(void) __attribute__((deprecated));
-    uint16_t GetVusbinData(void) __attribute__((deprecated));
-    uint16_t GetIusbinData(void) __attribute__((deprecated));
-    uint16_t GetVapsData(void) __attribute__((deprecated));
-    uint8_t GetBtnPress(void); // Use BtnC
-    /*{
-      if (!enable) {
-        return 0;
-      }
-
-      return _axp192->getPekPress();
-      }*/
-
-    void SetSleep(void);
-    void DeepSleep(uint64_t time_in_us = 0);
-    void LightSleep(uint64_t time_in_us = 0);
-
-    uint8_t GetWarningLeve(void) __attribute__((deprecated)) {
+    uint8_t GetInputPowerStatus() {
       // TODO
+      ESP_LOGE("AXP192", "Not Support");
+      return 0;
+    }
+    uint8_t GetBatteryChargingStatus() {
+      // TODO
+      ESP_LOGE("AXP192", "Not Support");
       return 0;
     }
 
-    void SetChargeVoltage(uint8_t);
-    void SetChargeCurrent(uint8_t);
-    void SetVOff(uint8_t voltage);
+    void DisableAllIRQ(void) {
+      // TODO
+      ESP_LOGE("AXP192", "Not Support");
+    }
+    void ClearAllIRQ(void) {
+      // TODO
+      ESP_LOGE("AXP192", "Not Support");
+    }
+    void EnablePressIRQ(bool short_press, bool long_press) {
+      // TODO
+      ESP_LOGE("AXP192", "Not Support");
+    }
+    void GetPressIRQ(bool *short_press, bool* long_press) {
+      // TODO
+      ESP_LOGE("AXP192", "Not Support");
+    }
+    void ClearPressIRQ(bool short_press, bool long_press) {
+      // TODO
+      ESP_LOGE("AXP192", "Not Support");
+    }
+
+    void EnableCoulombcounter(void) {
+      // TODO
+      ESP_LOGE("AXP192", "Not Support");
+    }
+    void DisableCoulombcounter(void) {
+      // TODO
+      ESP_LOGE("AXP192", "Not Support");
+    }
+    void StopCoulombcounter(void) {
+      // TODO
+      ESP_LOGE("AXP192", "Not Support");
+    }
+    void ClearCoulombcounter(void) {
+      // TODO
+      ESP_LOGE("AXP192", "Not Support");
+    }
+    uint32_t GetCoulombchargeData(void) {
+      // TODO
+      ESP_LOGE("AXP192", "Not Support");
+      return 0;
+    }
+    uint32_t GetCoulombdischargeData(void) {
+      // TODO
+      ESP_LOGE("AXP192", "Not Support");
+      return 0;
+    }
+    float GetCoulombData(void) {
+      // TODO
+      ESP_LOGE("AXP192", "Not Support");
+      return 0;
+    }
+
+    uint16_t GetVbatData(void) __attribute__((deprecated)) {
+      // TODO
+      ESP_LOGE("AXP192", "Not Support");
+      return 0;
+    }
+    uint16_t GetIchargeData(void) __attribute__((deprecated)) {
+      // TODO
+      ESP_LOGE("AXP192", "Not Support");
+      return 0;
+    }
+    uint16_t GetIdischargeData(void) __attribute__((deprecated)) {
+      // TODO
+      ESP_LOGE("AXP192", "Not Support");
+      return 0;
+    }
+    uint16_t GetTempData(void) __attribute__((deprecated)) {
+      // TODO
+      ESP_LOGE("AXP192", "Not Support");
+      return 0;
+    }
+    uint32_t GetPowerbatData(void) __attribute__((deprecated)) {
+      // TODO
+      ESP_LOGE("AXP192", "Not Support");
+      return 0;
+    }
+    uint16_t GetVinData(void) __attribute__((deprecated)) {
+      // TODO
+      ESP_LOGE("AXP192", "Not Support");
+      return 0;
+    }
+    uint16_t GetIinData(void) __attribute__((deprecated)) {
+      // TODO
+      ESP_LOGE("AXP192", "Not Support");
+      return 0;
+    }
+    uint16_t GetVusbinData(void) __attribute__((deprecated)) {
+      // TODO
+      ESP_LOGE("AXP192", "Not Support");
+      return 0;
+    }
+    uint16_t GetIusbinData(void) __attribute__((deprecated)) {
+      // TODO
+      ESP_LOGE("AXP192", "Not Support");
+      return 0;
+    }
+    uint16_t GetVapsData(void) __attribute__((deprecated)) {
+      // TODO
+      ESP_LOGE("AXP192", "Not Support");
+      return 0;
+    }
+    uint8_t GetBtnPress(void)__attribute__((deprecated)) {
+      // TODO
+      ESP_LOGE("AXP192", "Not Support");
+      return 0;
+    }
+
+    void SetSleep(void) {
+      // TODO
+      ESP_LOGE("AXP192", "Not Support");
+    }
+    void DeepSleep(uint64_t time_in_us = 0) {
+      // TODO
+      ESP_LOGE("AXP192", "Not Support");
+    }
+    void LightSleep(uint64_t time_in_us = 0) {
+      // TODO
+      ESP_LOGE("AXP192", "Not Support");
+    }
+
+    uint8_t GetWarningLeve(void) __attribute__((deprecated)) {
+      // TODO
+      ESP_LOGE("AXP192", "Not Support");
+      return 0;
+    }
+
+    void SetChargeVoltage(uint8_t) {
+      // TODO
+      ESP_LOGE("AXP192", "Not Support");
+    }
+    void SetChargeCurrent(uint8_t) {
+      // TODO
+      ESP_LOGE("AXP192", "Not Support");
+    }
+    void SetVOff(uint8_t voltage) {
+      // TODO
+      ESP_LOGE("AXP192", "Not Support");
+    }
 
     float GetBatVoltage() {
       if (!enable) {
@@ -156,18 +260,45 @@ class M5StackAXP192 {
       }
       return _axp192->getApsVoltage() / 1000.0;
     }
-    float GetBatCoulombInput();
-    float GetBatCoulombOut();
-    uint8_t GetWarningLevel(void) {
+    float GetBatCoulombInput() {
       // TODO
+      ESP_LOGE("AXP192", "Not Support");
       return 0;
     }
-    void SetCoulombClear()  __attribute__((deprecated));
-    void SetLDO2(bool State);
-    void SetLDO3(bool State);
-    void SetGPIO0(bool State);
-    void SetAdcState(bool State);
-    void SetAdcRate(uint8_t rate);
+    float GetBatCoulombOut() {
+      // TODO
+      ESP_LOGE("AXP192", "Not Support");
+      return 0;
+    }
+    uint8_t GetWarningLevel(void) {
+      // TODO
+      ESP_LOGE("AXP192", "Not Support");
+      return 0;
+    }
+    void SetCoulombClear()  __attribute__((deprecated)) {
+      // TODO
+      ESP_LOGE("AXP192", "Not Support");
+    }
+    void SetLDO2(bool State) {
+      // TODO
+      ESP_LOGE("AXP192", "Not Support");
+    }
+    void SetLDO3(bool State) {
+      // TODO
+      ESP_LOGE("AXP192", "Not Support");
+    }
+    void SetGPIO0(bool State) {
+      // TODO
+      ESP_LOGE("AXP192", "Not Support");
+    }
+    void SetAdcState(bool State) {
+      // TODO
+      ESP_LOGE("AXP192", "Not Support");
+    }
+    void SetAdcRate(uint8_t rate) {
+      // TODO
+      ESP_LOGE("AXP192", "Not Support");
+    }
 
     void PowerOff() {
       if (!enable) {
@@ -176,8 +307,14 @@ class M5StackAXP192 {
       _axp192->powerOff();
     }
 
-    void Read6BytesStorage(uint8_t *bufPtr);
-    void Write6BytesStorage(uint8_t *bufPtr);
+    void Read6BytesStorage(uint8_t *bufPtr) {
+      // TODO
+      ESP_LOGE("AXP192", "Not Support");
+    }
+    void Write6BytesStorage(uint8_t *bufPtr) {
+      // TODO
+      ESP_LOGE("AXP192", "Not Support");
+    }
 
     int enable = 0;
 

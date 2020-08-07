@@ -1,8 +1,7 @@
 #ifndef __M5StackPower_H__
 #define __M5StackPower_H__
 
-#include <Arduino.h>
-#include <Wire.h>
+#include "I2C_IP5306.h"
 
 #define SLEEP_MSEC(us)  (((uint64_t)us) * 1000L)
 #define SLEEP_SEC(us)   (((uint64_t)us) * 1000000L)
@@ -14,10 +13,35 @@ class M5StackPOWER
   public:
     M5StackPOWER() {
     }
+
+    void setIP5306(I2C_IP5306 *ip5306) {
+      _ip5306 = ip5306;
+    }
+
     bool canControl() {
-      return false;
+      return _ip5306->canControl();
     }
     void begin() {
+      if (!_ip5306->canControl()) {
+        return;
+      }
+
+      // 650mA
+      _ip5306->setVinMaxCurrent(0x06);
+
+      // 4.2V
+      _ip5306->setChargeVolt(0x00);
+
+      // 200mA
+      _ip5306->setChargeStopCurrent(0x00);
+
+      // 28mv
+      _ip5306->setChargeAddVolt(0x02);
+
+      // VIN
+      _ip5306->setChargeCC(0x01);
+
+      enable = true;
     }
 
     enum ShutdownTime {
@@ -27,41 +51,168 @@ class M5StackPOWER
       SHUTDOWN_64S
     };
 
-    bool setKeepLightLoad(bool en) __attribute__((deprecated));
-    bool setPowerBoostKeepOn(bool en);
-    bool setAutoBootOnLoad(bool en);
-    bool setLowPowerShutdown(bool en) __attribute__((deprecated));
-    bool setLowPowerShutdownTime(ShutdownTime time);
-    bool setPowerBoostOnOff(bool en);
-    bool setPowerBoostSet(bool en);
-    bool setPowerVin(bool en);
-    bool setPowerWLEDSet(bool en);
-    bool setPowerBtnEn(bool en);
+    bool setKeepLightLoad(bool en) __attribute__((deprecated)) {
+      // TODO
+      ESP_LOGE("Power", "Not Support");
+      return false;
+    }
+    bool setPowerBoostKeepOn(bool en) {
+      if (!enable) {
+        return false;
+      }
+      _ip5306->setBoostOut(en);
+      return true;
+    }
+    bool setAutoBootOnLoad(bool en) {
+      if (!enable) {
+        return false;
+      }
+      _ip5306->setBoosOnLoad(en);
+      return true;
+    }
+    bool setLowPowerShutdown(bool en) __attribute__((deprecated)) {
+      // TODO
+      ESP_LOGE("Power", "Not Support");
+      return false;
+    }
+    bool setLowPowerShutdownTime(ShutdownTime time) {
+      if (!enable) {
+        return false;
+      }
+      _ip5306->setLowPowerShutdownTime(time >> 2);
+      return true;
+    }
+    bool setPowerBoostOnOff(bool en) {
+      if (!enable) {
+        return false;
+      }
+      _ip5306->setBoostButtonType(en);
+      return true;
+    }
+    bool setPowerBoostSet(bool en) {
+      if (!enable) {
+        return false;
+      }
+      _ip5306->setShortBoost(en);
+      return true;
+    }
+    bool setPowerVin(bool en) {
+      if (!enable) {
+        return false;
+      }
+      _ip5306->setVin(en);
+      return true;
+    }
+    bool setPowerWLEDSet(bool en) {
+      if (!enable) {
+        return false;
+      }
+      _ip5306->setWledButtonType(en);
+      return true;
+    }
+    bool setPowerBtnEn(bool en) {
+      if (!enable) {
+        return false;
+      }
+      _ip5306->setBoostButton(en);
+      return true;
+    }
 
-    bool setVinMaxCurrent(uint8_t cur);
-    bool setChargeVolt(uint8_t volt);
+    bool setVinMaxCurrent(uint8_t cur) {
+      if (!enable) {
+        return false;
+      }
+      _ip5306->setVinMaxCurrent(cur);
+      return true;
+    }
+    bool setChargeVolt(uint8_t volt) {
+      if (!enable) {
+        return false;
+      }
+      _ip5306->setChargeVolt(volt);
+      return true;
+    }
 
-    bool setCharge(bool en);
-    bool isChargeFull();
-    bool isCharging();
-    int8_t getBatteryLevel();
-    bool batteryMode(bool en);
+    bool setCharge(bool en) {
+      if (!enable) {
+        return false;
+      }
+      _ip5306->setCharger(en);
+      return true;
+    }
+    bool isChargeFull() {
+      if (!enable) {
+        return false;
+      }
+      return _ip5306->isChargeFull();
+    }
+    bool isCharging() {
+      if (!enable) {
+        return false;
+      }
+      return _ip5306->isCharging();
+    }
+    int8_t getBatteryLevel() {
+      if (!enable) {
+        return false;
+      }
+      return _ip5306->getBatteryLevel();
+    }
+    bool batteryMode(bool en) {
+      // TODO
+      ESP_LOGE("Power", "Not Support");
+      return false;
+    }
 
-    void setWakeupButton(uint8_t button);
+    void setWakeupButton(uint8_t button) {
+      // TODO
+      ESP_LOGE("Power", "Not Support");
+    }
 
-    bool isResetbyWatchdog();
-    bool isResetbyDeepsleep();
-    bool isResetbySoftware();
-    bool isResetbyPowerSW();
+    bool isResetbyWatchdog() {
+      // TODO
+      ESP_LOGE("Power", "Not Support");
+      return false;
+    }
+    bool isResetbyDeepsleep() {
+      // TODO
+      ESP_LOGE("Power", "Not Support");
+      return false;
+    }
+    bool isResetbySoftware() {
+      // TODO
+      ESP_LOGE("Power", "Not Support");
+      return false;
+    }
+    bool isResetbyPowerSW() {
+      // TODO
+      ESP_LOGE("Power", "Not Support");
+      return false;
+    }
 
-    void deepSleep(uint64_t time_in_us = 0);
-    void lightSleep(uint64_t time_in_us = 0);
+    void deepSleep(uint64_t time_in_us = 0) {
+      // TODO
+      ESP_LOGE("Power", "Not Support");
+    }
+    void lightSleep(uint64_t time_in_us = 0) {
+      // TODO
+      ESP_LOGE("Power", "Not Support");
+    }
 
-    void powerOFF();
+    void powerOFF() {
+      if (!enable) {
+        return;
+      }
+      _ip5306->setBoost(false);
+    }
 
-    void reset();
+    void reset() {
+      esp_restart();
+    }
 
   private:
     uint8_t _wakeupPin;
+    I2C_IP5306 *_ip5306;
+    bool enable = false;
 };
 #endif

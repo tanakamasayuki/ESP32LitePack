@@ -47,12 +47,34 @@ class M5StackIMU {
       _bma423 = bma423;
     }
 
-    void getGres();
-    void getAres();
+    void getGres() {
+      // TODO
+      ESP_LOGE("IMU", "Not Support");
+    }
+    void getAres() {
+      // TODO
+      ESP_LOGE("IMU", "Not Support");
+    }
 
-    void getAccelAdc(int16_t *ax, int16_t *ay, int16_t *az);
-    void getGyroAdc(int16_t *gx, int16_t *gy, int16_t *gz);
-    void getTempAdc(int16_t *t);
+    void getAccelAdc(int16_t *ax, int16_t *ay, int16_t *az) {
+      // TODO
+      ESP_LOGE("IMU", "Not Support");
+      *ax = 0;
+      *ay = 0;
+      *az = 0;
+    }
+    void getGyroAdc(int16_t *gx, int16_t *gy, int16_t *gz) {
+      // TODO
+      ESP_LOGE("IMU", "Not Support");
+      *gx = 0;
+      *gy = 0;
+      *gz = 0;
+    }
+    void getTempAdc(int16_t *t) {
+      // TODO
+      ESP_LOGE("IMU", "Not Support");
+      *t = 0;
+    }
 
     void getAccelData(float *ax, float *ay, float *az) {
       if (imuType == IMU_MPU6886) {
@@ -88,7 +110,13 @@ class M5StackIMU {
       }
     }
 
-    void getAhrsData(float *pitch, float *roll, float *yaw);
+    void getAhrsData(float *pitch, float *roll, float *yaw) {
+      // TODO
+      ESP_LOGE("IMU", "Not Support");
+      *pitch = 0;
+      *roll = 0;
+      *yaw = 0;
+    }
 
     ImuType imuType;
     float aRes;

@@ -47,6 +47,9 @@ void setup() {
   M5.dis.drawpix(2, CRGB(0, 255, 0));
   M5.dis.drawpix(4, CRGB(0, 0, 255));
   M5.dis.drawpix(6, CRGB::White);
+
+  // Not Support(ESP_LOGE)
+  M5.Axp.GetWarningLevel();
 }
 
 void loop() {
@@ -56,8 +59,7 @@ void loop() {
 
   M5.Lcd.setCursor(0, 4, 1);
 
-  M5.Lcd.printf("M5StackAuto Test\n");
-  M5.Lcd.printf("\n");
+  M5.Lcd.printf("M5StackAuto\n");
 
   M5.Lcd.printf("Battery\n");
   M5.Lcd.printf(" Temp :%6.1f\n", M5.Axp.GetTempInAXP192());  // AXP192 Internal temperature
@@ -75,12 +77,33 @@ void loop() {
   M5.Lcd.printf(" V(V) :%6.3f\n", M5.Axp.GetVinVoltage());    // 5V IN Voltage
   M5.Lcd.printf(" I(mA):%6.1f\n", M5.Axp.GetVinCurrent());    // 5V IN Current
 
+  if (M5.Imu.imuType != 0) {
+    float ax;
+    float ay;
+    float az;
+    float gx;
+    float gy;
+    float gz;
+    float t;
+
+    M5.Imu.getAccelData(&ax, &ay, &az);
+    M5.Imu.getGyroData(&gx, &gy, &gz);
+    M5.Imu.getTempData(&t);
+
+    Serial.printf(" %f,%f,%f,%f,%f,%f,%f\n", ax, ay, az, gx, gy, gz, t);
+
+    M5.Lcd.printf(" Accel   Gyro\n");
+    M5.Lcd.printf("X%5.2f%7.1f\n", ax, gx);
+    M5.Lcd.printf("Y%5.2f%7.1f\n", ay, gy);
+    M5.Lcd.printf("Z%5.2f%7.1f\n", az, gz);
+  }
+
   RTC_TimeTypeDef RTC_TimeStruct;
   RTC_DateTypeDef RTC_DateStruct;
   M5.Rtc.GetTime(&RTC_TimeStruct);
   M5.Rtc.GetData(&RTC_DateStruct);
   M5.Lcd.printf("%04d-%02d-%02d\n", RTC_DateStruct.Year, RTC_DateStruct.Month, RTC_DateStruct.Date);
-  M5.Lcd.printf("%02d:%02d:%02d", RTC_TimeStruct.Hours, RTC_TimeStruct.Minutes, RTC_TimeStruct.Seconds);
+  M5.Lcd.printf("%02d:%02d:%02d\n", RTC_TimeStruct.Hours, RTC_TimeStruct.Minutes, RTC_TimeStruct.Seconds);
 
   if (M5.BtnA.wasPressed()) {
     Serial.println("M5.BtnA.wasPressed()");
@@ -106,22 +129,6 @@ void loop() {
   }
   if (M5.BtnC.wasReleased()) {
     Serial.println("M5.BtnC.wasReleased()");
-  }
-
-  if (M5.Imu.imuType != 0) {
-    float ax;
-    float ay;
-    float az;
-    float gx;
-    float gy;
-    float gz;
-    float t;
-
-    M5.Imu.getAccelData(&ax, &ay, &az);
-    M5.Imu.getGyroData(&gx, &gy, &gz);
-    M5.Imu.getTempData(&t);
-
-    Serial.printf(" %f,%f,%f,%f,%f,%f,%f\n", ax, ay, az, gx, gy, gz, t);
   }
 
   delay(100);

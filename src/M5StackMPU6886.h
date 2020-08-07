@@ -27,9 +27,25 @@ class M5StackMPU6886 {
       return imu->begin();
     }
 
-    void getAccelAdc(int16_t* ax, int16_t* ay, int16_t* az);
-    void getGyroAdc(int16_t* gx, int16_t* gy, int16_t* gz);
-    void getTempAdc(int16_t *t);
+    void getAccelAdc(int16_t* ax, int16_t* ay, int16_t* az) {
+      // TODO
+      ESP_LOGE("MPU6886", "Not Support");
+      *ax = 0;
+      *ay = 0;
+      *az = 0;
+    }
+    void getGyroAdc(int16_t* gx, int16_t* gy, int16_t* gz) {
+      // TODO
+      ESP_LOGE("MPU6886", "Not Support");
+      *gx = 0;
+      *gy = 0;
+      *gz = 0;
+    }
+    void getTempAdc(int16_t *t) {
+      // TODO
+      ESP_LOGE("MPU6886", "Not Support");
+      *t = 0;
+    }
 
     void getAccelData(float* ax, float* ay, float* az) {
       imu->getAccel(ax, ay, az);
@@ -41,10 +57,22 @@ class M5StackMPU6886 {
       imu->getTemp(t);
     }
 
-    void SetGyroFsr(Gscale scale);
-    void SetAccelFsr(Ascale scale);
+    void SetGyroFsr(Gscale scale) {
+      // TODO
+      ESP_LOGE("MPU6886", "Not Support");
+    }
+    void SetAccelFsr(Ascale scale) {
+      // TODO
+      ESP_LOGE("MPU6886", "Not Support");
+    }
 
-    void getAhrsData(float *pitch, float *roll, float *yaw);
+    void getAhrsData(float *pitch, float *roll, float *yaw) {
+      // TODO
+      ESP_LOGE("MPU6886", "Not Support");
+      *pitch = 0;
+      *roll = 0;
+      *yaw = 0;
+    }
 
   private:
     I2C_MPU6886 *imu;
