@@ -1,8 +1,16 @@
 #ifndef __M5StackAuto_H__
 #define __M5StackAuto_H__
 
-#define LGFX_AUTODETECT
-#include <LGFX_TFT_eSPI.hpp>        // https://github.com/lovyan03/LovyanGFX
+#define LGFX_M5STACK          // M5Stack
+#define LGFX_M5STICKC         // M5Stick C
+#define LGFX_ODROID_GO        // ODROID-GO
+#define LGFX_TTGO_TS          // TTGO TS
+#define LGFX_TTGO_TWATCH      // TTGO T-Watch
+#define LGFX_TTGO_TWRISTBAND  // TTGO T-Wristband
+#define LGFX_DDUINO32_XS      // DSTIKE D-duino-32 XS
+#define LGFX_LOLIN_D32_PRO    // LoLin D32 Pro
+#define LGFX_ESP_WROVER_KIT   // ESP-WROVER-KIT
+#include <LGFX_TFT_eSPI.hpp>  // https://github.com/lovyan03/LovyanGFX
 #include "M5StackAXP192.h"
 #include "M5StackRTC.h"
 #include "M5StackButton.h"
@@ -80,6 +88,8 @@ class M5StackAuto {
           SPEAKER_PIN       = 25;
           TONE_PIN_CHANNEL  =  0;
           TFCARD_CS_PIN     =  4;
+
+          Wire1.begin(21, 22);
         } else if (board == LGFX::board_M5StickC) {
           // M5StickC
           Serial.print("(M5StickC)");
@@ -94,6 +104,8 @@ class M5StackAuto {
 
           Axp.enable = true;
           Rtc.enable = true;
+
+          Wire1.begin(21, 22);
         } else if (board == LGFX::board_M5StickCPlus) {
           // M5StickC Plus
           Serial.print("(M5StickC Plus)");
@@ -108,7 +120,8 @@ class M5StackAuto {
 
           Axp.enable = true;
           Rtc.enable = true;
-#if 0
+
+          Wire1.begin(21, 22);
         } else if (board == LGFX::board_TTGO_TWatch) {
           // TTGO T-Watch
           Serial.print("(LILYGO TTGO T-Watch)");
@@ -122,8 +135,9 @@ class M5StackAuto {
           TFCARD_CS_PIN     = -1;
 
           Rtc.enable = true;
-#endif
-        } else {
+
+          Wire1.begin(21, 22);
+        } else if (board == LGFX::board_unknown) {
           // ATOM
           Serial.print("(M5AOM)");
           M5_IR             = 12;
@@ -143,10 +157,15 @@ class M5StackAuto {
 
           // I2C Init
           Wire1.begin(25, 21, 10000);
-        }
-      }
+        } else {
+          // Other
+          Serial.print("(Other)");
 
-      Wire1.begin(21, 22);
+          Wire1.begin(-1, -1);
+        }
+      } else {
+        Wire1.begin(21, 22);
+      }
 
       // Power
       if (PowerEnable) {
