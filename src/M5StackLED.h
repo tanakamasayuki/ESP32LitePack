@@ -47,15 +47,15 @@ class M5StackLED {
       }
     }
 
-    void animation(uint8_t *buffptr, uint8_t amspeed, uint8_t ammode, int64_t amcount = -1) {
+    void animation(uint8_t *buffptr, uint8_t amspeed, uint8_t ammode, int64_t amcount = -1) __attribute__((deprecated)){
       // TODO
       ESP_LOGE("M5StackLED", "Not Support");
     }
-    void displaybuff(uint8_t *buffptr, int8_t offsetx = 0, int8_t offsety = 0) {
+    void displaybuff(uint8_t *buffptr, int8_t offsetx = 0, int8_t offsety = 0) __attribute__((deprecated)){
       // TODO
       ESP_LOGE("M5StackLED", "Not Support");
     }
-    void MoveDisPlayBuff(int8_t offsetx = 0, int8_t offsety = 0) {
+    void MoveDisPlayBuff(int8_t offsetx = 0, int8_t offsety = 0) __attribute__((deprecated)){
       // TODO
       ESP_LOGE("M5StackLED", "Not Support");
     }

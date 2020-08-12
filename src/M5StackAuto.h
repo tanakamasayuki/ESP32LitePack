@@ -3,13 +3,7 @@
 
 #define LGFX_M5STACK          // M5Stack
 #define LGFX_M5STICKC         // M5Stick C
-#define LGFX_ODROID_GO        // ODROID-GO
-#define LGFX_TTGO_TS          // TTGO TS
 #define LGFX_TTGO_TWATCH      // TTGO T-Watch
-#define LGFX_TTGO_TWRISTBAND  // TTGO T-Wristband
-#define LGFX_DDUINO32_XS      // DSTIKE D-duino-32 XS
-#define LGFX_LOLIN_D32_PRO    // LoLin D32 Pro
-#define LGFX_ESP_WROVER_KIT   // ESP-WROVER-KIT
 #include <LGFX_TFT_eSPI.hpp>  // https://github.com/lovyan03/LovyanGFX
 #include "M5StackAXP192.h"
 #include "M5StackRTC.h"
@@ -77,6 +71,7 @@ class M5StackAuto {
       if (LCDEnable) {
         Lcd.begin();
         board = (int)Lcd.getBoard();
+        Imu.boardType = board;
         if (board == LGFX::board_M5Stack) {
           // M5Stack
           Serial.print("(M5Stack)");

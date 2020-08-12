@@ -25,7 +25,7 @@ class M5StackRTC {
       }
       rtc.begin();
     }
-    void GetBm8563Time(void) {
+    void GetBm8563Time(void) __attribute__((deprecated)) {
       // TODO
       ESP_LOGE("RTC", "Not Support");
     }

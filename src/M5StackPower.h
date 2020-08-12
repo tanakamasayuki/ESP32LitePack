@@ -158,43 +158,43 @@ class M5StackPOWER
       }
       return _ip5306->getBatteryLevel();
     }
-    bool batteryMode(bool en) {
+    bool batteryMode(bool en) __attribute__((deprecated)) {
       // TODO
       ESP_LOGE("Power", "Not Support");
       return false;
     }
 
-    void setWakeupButton(uint8_t button) {
+    void setWakeupButton(uint8_t button) __attribute__((deprecated)) {
       // TODO
       ESP_LOGE("Power", "Not Support");
     }
 
-    bool isResetbyWatchdog() {
+    bool isResetbyWatchdog() __attribute__((deprecated)) {
       // TODO
       ESP_LOGE("Power", "Not Support");
       return false;
     }
-    bool isResetbyDeepsleep() {
+    bool isResetbyDeepsleep() __attribute__((deprecated)) {
       // TODO
       ESP_LOGE("Power", "Not Support");
       return false;
     }
-    bool isResetbySoftware() {
+    bool isResetbySoftware() __attribute__((deprecated)) {
       // TODO
       ESP_LOGE("Power", "Not Support");
       return false;
     }
-    bool isResetbyPowerSW() {
+    bool isResetbyPowerSW() __attribute__((deprecated)) {
       // TODO
       ESP_LOGE("Power", "Not Support");
       return false;
     }
 
-    void deepSleep(uint64_t time_in_us = 0) {
+    void deepSleep(uint64_t time_in_us = 0) __attribute__((deprecated)) {
       // TODO
       ESP_LOGE("Power", "Not Support");
     }
-    void lightSleep(uint64_t time_in_us = 0) {
+    void lightSleep(uint64_t time_in_us = 0) __attribute__((deprecated)) {
       // TODO
       ESP_LOGE("Power", "Not Support");
     }

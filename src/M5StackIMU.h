@@ -47,30 +47,30 @@ class M5StackIMU {
       _bma423 = bma423;
     }
 
-    void getGres() {
+    void getGres() __attribute__((deprecated)) {
       // TODO
       ESP_LOGE("IMU", "Not Support");
     }
-    void getAres() {
+    void getAres() __attribute__((deprecated)) {
       // TODO
       ESP_LOGE("IMU", "Not Support");
     }
 
-    void getAccelAdc(int16_t *ax, int16_t *ay, int16_t *az) {
+    void getAccelAdc(int16_t *ax, int16_t *ay, int16_t *az) __attribute__((deprecated)) {
       // TODO
       ESP_LOGE("IMU", "Not Support");
       *ax = 0;
       *ay = 0;
       *az = 0;
     }
-    void getGyroAdc(int16_t *gx, int16_t *gy, int16_t *gz) {
+    void getGyroAdc(int16_t *gx, int16_t *gy, int16_t *gz) __attribute__((deprecated)) {
       // TODO
       ESP_LOGE("IMU", "Not Support");
       *gx = 0;
       *gy = 0;
       *gz = 0;
     }
-    void getTempAdc(int16_t *t) {
+    void getTempAdc(int16_t *t) __attribute__((deprecated)) __attribute__((deprecated)) {
       // TODO
       ESP_LOGE("IMU", "Not Support");
       *t = 0;
@@ -88,6 +88,14 @@ class M5StackIMU {
         *ay = 0;
         *az = 0;
       }
+
+      if (boardType == LGFX::board_unknown) {
+        *ax = -(*ax);
+        *az = -(*az);
+      } else if (boardType == LGFX::board_TTGO_TWatch) {
+        *ax = -(*ax);
+        *ay = -(*ay);
+      }
     }
     void getGyroData(float *gx, float *gy, float *gz) {
       if (imuType == IMU_MPU6886) {
@@ -98,6 +106,11 @@ class M5StackIMU {
         *gx = 0;
         *gy = 0;
         *gz = 0;
+      }
+
+      if (boardType == LGFX::board_unknown) {
+        *gx = -(*gx);
+        *gz = -(*gz);
       }
     }
     void getTempData(float *t) {
@@ -110,7 +123,7 @@ class M5StackIMU {
       }
     }
 
-    void getAhrsData(float *pitch, float *roll, float *yaw) {
+    void getAhrsData(float *pitch, float *roll, float *yaw) __attribute__((deprecated)) {
       // TODO
       ESP_LOGE("IMU", "Not Support");
       *pitch = 0;
@@ -119,6 +132,7 @@ class M5StackIMU {
     }
 
     ImuType imuType;
+    int boardType;
     float aRes;
     float gRes;
 
