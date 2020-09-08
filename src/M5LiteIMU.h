@@ -1,11 +1,11 @@
-#ifndef __M5StackIMU_H__
-#define __M5StackIMU_H__
+#ifndef __M5LiteIMU_H__
+#define __M5LiteIMU_H__
 
 #include "I2C_MPU6886.h"
 #include "I2C_SH200Q.h"
 #include "I2C_BMA423.h"
 
-class M5StackIMU {
+class M5LiteIMU {
   public:
     enum ImuType {
       IMU_UNKNOWN   =   0,
@@ -89,10 +89,10 @@ class M5StackIMU {
         *az = 0;
       }
 
-      if (boardType == LGFX::board_unknown) {
+      if (board == lgfx::board_unknown) {
         *ax = -(*ax);
         *az = -(*az);
-      } else if (boardType == LGFX::board_TTGO_TWatch) {
+      } else if (board == lgfx::board_TTGO_TWatch) {
         *ax = -(*ax);
         *ay = -(*ay);
       }
@@ -108,7 +108,7 @@ class M5StackIMU {
         *gz = 0;
       }
 
-      if (boardType == LGFX::board_unknown) {
+      if (board == lgfx::board_unknown) {
         *gx = -(*gx);
         *gz = -(*gz);
       }
@@ -132,7 +132,7 @@ class M5StackIMU {
     }
 
     ImuType imuType;
-    int boardType;
+    int board;
     float aRes;
     float gRes;
 

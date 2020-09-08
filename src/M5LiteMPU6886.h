@@ -1,9 +1,9 @@
-#ifndef __M5StackMPU6886_H__
-#define __M5StackMPU6886_H__
+#ifndef __M5LiteMPU6886_H__
+#define __M5LiteMPU6886_H__
 
 #include "I2C_MPU6886.h"
 
-class M5StackMPU6886 {
+class M5LiteMPU6886 {
   public:
     enum Ascale {
       AFS_2G = 0,

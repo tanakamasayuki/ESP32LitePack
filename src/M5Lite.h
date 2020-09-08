@@ -1,20 +1,22 @@
-#ifndef __M5StackAuto_H__
-#define __M5StackAuto_H__
+#ifndef __M5Lite_H__
+#define __M5Lite_H__
 
 #define LGFX_M5STACK          // M5Stack
 #define LGFX_M5STICKC         // M5Stick C
 #define LGFX_TTGO_TWATCH      // TTGO T-Watch
 #include <LGFX_TFT_eSPI.hpp>  // https://github.com/lovyan03/LovyanGFX
-#include "M5StackAXP192.h"
-#include "M5StackRTC.h"
-#include "M5StackButton.h"
-#include "M5StackIMU.h"
-#include "M5StackMPU6886.h"
-#include "M5StackSH200Q.h"
-#include "M5StackPower.h"
-#include "M5StackCommUtil.h"
-#include "M5StackSpeaker.h"
-#include "M5StackLED.h"
+#include "M5LiteAXP192.h"
+#include "M5LiteRTC.h"
+#include "M5LiteButton.h"
+#include "M5LiteIMU.h"
+#include "M5LiteMPU6886.h"
+#include "M5LiteSH200Q.h"
+#include "M5LitePower.h"
+#include "M5LiteCommUtil.h"
+#include "M5LiteSpeaker.h"
+#include "M5LiteLED.h"
+#include "M5LiteDebug.h"
+#include "M5LiteEx.h"
 
 // Color
 #define BLACK               0x0000
@@ -47,7 +49,7 @@ uint8_t SPEAKER_PIN       = -1;
 uint8_t TONE_PIN_CHANNEL  = -1;
 uint8_t TFCARD_CS_PIN     = -1;
 
-class M5StackAuto {
+class M5LiteBase {
   public:
     void begin(bool LCDEnable = true, bool PowerEnable = true, bool SerialEnable = true) {
       // UART
@@ -55,7 +57,7 @@ class M5StackAuto {
         Serial.begin(115200);
         Serial.flush();
         delay(200);
-        Serial.print("M5StackAuto");
+        Serial.print("M5LiteBase");
       }
 
       Axp.setAXP192(&axp192);
@@ -70,9 +72,9 @@ class M5StackAuto {
       // LCD INIT
       if (LCDEnable) {
         Lcd.begin();
-        board = (int)Lcd.getBoard();
-        Imu.boardType = board;
-        if (board == LGFX::board_M5Stack) {
+        Ex.board = (int)Lcd.getBoard();
+        Imu.board = Ex.board;
+        if (Ex.board == lgfx::board_M5Stack) {
           // M5Stack
           Serial.print("(M5Stack)");
           M5_IR             = -1;
@@ -85,7 +87,23 @@ class M5StackAuto {
           TFCARD_CS_PIN     =  4;
 
           Wire1.begin(21, 22);
-        } else if (board == LGFX::board_M5StickC) {
+        } else if (Ex.board == lgfx::board_M5StackCore2) {
+          // M5Stack Core2
+          Serial.print("(M5Stack Core2)");
+          M5_IR             = -1;
+          M5_LED            = -1;
+          BUTTON_A_PIN      = -1;
+          BUTTON_B_PIN      = -1;
+          BUTTON_C_PIN      = -1;
+          SPEAKER_PIN       = -1;
+          TONE_PIN_CHANNEL  =  0;
+          TFCARD_CS_PIN     =  4;
+
+          Axp.enable = true;
+          Rtc.enable = true;
+
+          Wire1.begin(21, 22);
+        } else if (Ex.board == lgfx::board_M5StickC) {
           // M5StickC
           Serial.print("(M5StickC)");
           M5_IR             =  9;
@@ -101,7 +119,7 @@ class M5StackAuto {
           Rtc.enable = true;
 
           Wire1.begin(21, 22);
-        } else if (board == LGFX::board_M5StickCPlus) {
+        } else if (Ex.board == lgfx::board_M5StickCPlus) {
           // M5StickC Plus
           Serial.print("(M5StickC Plus)");
           M5_IR             =  9;
@@ -117,7 +135,7 @@ class M5StackAuto {
           Rtc.enable = true;
 
           Wire1.begin(21, 22);
-        } else if (board == LGFX::board_TTGO_TWatch) {
+        } else if (Ex.board == lgfx::board_TTGO_TWatch) {
           // TTGO T-Watch
           Serial.print("(LILYGO TTGO T-Watch)");
           M5_IR             = -1;
@@ -132,9 +150,9 @@ class M5StackAuto {
           Rtc.enable = true;
 
           Wire1.begin(21, 22);
-        } else if (board == LGFX::board_unknown) {
+        } else if (Ex.board == lgfx::board_unknown) {
           // ATOM
-          Serial.print("(M5AOM)");
+          Serial.print("(M5Stack ATOM)");
           M5_IR             = 12;
           M5_LED            = -1;
           BUTTON_A_PIN      = 39;
@@ -145,7 +163,7 @@ class M5StackAuto {
           TFCARD_CS_PIN     = -1;
 
           // LCD not use
-          _useLcd = false;
+          Ex.useLcd = false;
 
           // LED start
           dis.begin();
@@ -164,8 +182,9 @@ class M5StackAuto {
 
       // Power
       if (PowerEnable) {
+        Axp.setBoard(Ex.board);
         Axp.begin();
-        if (_useLcd) {
+        if (Ex.useLcd) {
           Lcd.drawPixel(0, 0, 0x0000);
           Lcd.clear();
         }
@@ -179,41 +198,63 @@ class M5StackAuto {
 
       Beep.setPin(SPEAKER_PIN, TONE_PIN_CHANNEL);
 
+      Debug._Lcd = &Lcd;
+      Debug._Axp = &Axp;
+      Debug._BtnA = &BtnA;
+      Debug._BtnB = &BtnB;
+      Debug._BtnC = &BtnC;
+      Debug._Rtc = &Rtc;
+      Debug._Imu = &Imu;
+      Debug._Mpu6886 = &Mpu6886;
+      Debug._Sh200Q = &Sh200Q;
+      Debug._I2C = &I2C;
+      Debug._Power = &Power;
+      Debug._Beep = &Beep;
+      Debug._dis = &dis;
+      Ex._Lcd = &Lcd;
+      Ex._Axp = &Axp;
+      Ex._BtnA = &BtnA;
+      Ex._BtnB = &BtnB;
+      Ex._BtnC = &BtnC;
+      Ex._Rtc = &Rtc;
+      Ex._Imu = &Imu;
+      Ex._Mpu6886 = &Mpu6886;
+      Ex._Sh200Q = &Sh200Q;
+      Ex._I2C = &I2C;
+      Ex._Power = &Power;
+      Ex._Beep = &Beep;
+      Ex._dis = &dis;
+      Ex._Debug = &Debug;
+
       if (SerialEnable) {
         Serial.println(" initializing...OK");
       }
     }
 
     void update() {
-      BtnA.read();
-      BtnB.read();
-      BtnC.read();
-      Beep.update();
-    }
-
-    bool useLcd() {
-      return _useLcd;
+      Ex.update();
     }
 
     TFT_eSPI Lcd;
-    M5StackAXP192 Axp = M5StackAXP192();
+    M5LiteAXP192 Axp = M5LiteAXP192();
 
-    M5StackButton BtnA;
-    M5StackButton BtnB;
-    M5StackButton BtnC;
+    M5LiteButton BtnA;
+    M5LiteButton BtnB;
+    M5LiteButton BtnC;
 
-    M5StackRTC Rtc;
+    M5LiteRTC Rtc;
 
-    M5StackIMU Imu;
-    M5StackMPU6886 Mpu6886;
-    M5StackSH200Q Sh200Q;
+    M5LiteIMU Imu;
+    M5LiteMPU6886 Mpu6886;
+    M5LiteSH200Q Sh200Q;
 
-    M5StackCommUtil I2C = M5StackCommUtil(Wire);
-    M5StackPOWER Power;
-    M5StackSPEAKER Beep;
-    M5StackLED dis;
+    M5LiteCommUtil I2C = M5LiteCommUtil(Wire);
+    M5LitePower Power;
+    M5LiteSpeaker Beep;
+    M5LiteLED dis;
 
-    int board = 0;
+    M5LiteDebug Debug;
+    M5LiteEx Ex;
 
   private:
     const uint32_t DEBOUNCE_MS = 10;
@@ -222,9 +263,9 @@ class M5StackAuto {
     I2C_BMA423 bma423 = I2C_BMA423(I2C_BMA423_DEFAULT_ADDRESS, Wire1);
     I2C_AXP192 axp192 = I2C_AXP192(I2C_AXP192_DEFAULT_ADDRESS, Wire1);
     I2C_IP5306 ip5306 = I2C_IP5306(I2C_IP5306_DEFAULT_ADDRESS, Wire1);
-    bool _useLcd = true;
 };
 
-M5StackAuto M5;
+M5LiteBase M5Lite;
+#define M5 M5Lite
 
 #endif

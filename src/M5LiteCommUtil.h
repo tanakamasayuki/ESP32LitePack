@@ -1,16 +1,16 @@
-#ifndef __M5StackCommUtil_H__
-#define __M5StackCommUtil_H__
+#ifndef __M5LiteCommUtil_H__
+#define __M5LiteCommUtil_H__
 
-class M5StackCommUtil {
+class M5LiteCommUtil {
   public:
-    M5StackCommUtil(TwoWire &i2cPort = Wire) {
+    M5LiteCommUtil(TwoWire &i2cPort = Wire) {
       _i2cPort = &i2cPort;
     }
     bool writeCommand(uint8_t address, uint8_t subAddress) {
       _i2cPort->beginTransmission(address);
       _i2cPort->write(subAddress);
       uint8_t ret = _i2cPort->endTransmission();
-      ESP_LOGD("M5StackCommUtil", "writeCommand(%02X) = %02X", address, subAddress);
+      ESP_LOGD("M5LiteCommUtil", "writeCommand(%02X) = %02X", address, subAddress);
       return (ret == 0);
     }
     bool writeByte(uint8_t address, uint8_t subAddress, uint8_t data) {
@@ -18,7 +18,7 @@ class M5StackCommUtil {
       _i2cPort->write(subAddress);
       _i2cPort->write(data);
       uint8_t ret = _i2cPort->endTransmission();
-      ESP_LOGD("M5StackCommUtil", "writeByte(%02X) = %02X", address, subAddress);
+      ESP_LOGD("M5LiteCommUtil", "writeByte(%02X) = %02X", address, subAddress);
       return (ret == 0);
     }
     bool writeBytes(uint8_t address, uint8_t subAddress, uint8_t *data, uint8_t length) {
@@ -26,7 +26,7 @@ class M5StackCommUtil {
       _i2cPort->write(subAddress);
       for (int i = 0; i < length; i++) {
         _i2cPort->write(data[i]);
-        ESP_LOGD("M5StackCommUtil", "writeBytes(%02X) = %02X", address + i, data[i]);
+        ESP_LOGD("M5LiteCommUtil", "writeBytes(%02X) = %02X", address + i, data[i]);
       }
       uint8_t ret = _i2cPort->endTransmission();
       return (ret == 0);
@@ -35,7 +35,7 @@ class M5StackCommUtil {
       _i2cPort->requestFrom(address, (uint8_t)1);
       *result = _i2cPort->read();
 
-      ESP_LOGD("M5StackCommUtil", "readByte(%02X) = %02X", address, *result);
+      ESP_LOGD("M5LiteCommUtil", "readByte(%02X) = %02X", address, *result);
       return true;
     }
     bool readByte(uint8_t address, uint8_t subAddress, uint8_t *result) {
@@ -49,7 +49,7 @@ class M5StackCommUtil {
       _i2cPort->requestFrom(address, count);
       for (int i = 0; i < count; i++) {
         dest[i] = _i2cPort->read();
-        ESP_LOGD("M5StackCommUtil", "readBytes(%02X) = %02X", address + i, dest[i]);
+        ESP_LOGD("M5LiteCommUtil", "readBytes(%02X) = %02X", address + i, dest[i]);
       }
       return true;
     }

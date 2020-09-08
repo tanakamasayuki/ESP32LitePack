@@ -1,9 +1,9 @@
-#ifndef __M5StackSH200Q_H__
-#define __M5StackSH200Q_H__
+#ifndef __M5LiteSH200Q_H__
+#define __M5LiteSH200Q_H__
 
 #include "I2C_SH200Q.h"
 
-class M5StackSH200Q {
+class M5LiteSH200Q {
   public:
     enum Ascale {
       AFS_2G = 0,

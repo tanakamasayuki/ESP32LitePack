@@ -1,5 +1,5 @@
-#ifndef __M5StackRTC_H__
-#define __M5StackRTC_H__
+#ifndef __M5LiteRTC_H__
+#define __M5LiteRTC_H__
 
 #include <Wire.h>
 #include "I2C_BM8563.h"
@@ -17,7 +17,7 @@ typedef struct {
   uint16_t Year;
 } RTC_DateTypeDef;
 
-class M5StackRTC {
+class M5LiteRTC {
   public:
     void begin(void) {
       if (!enable) {

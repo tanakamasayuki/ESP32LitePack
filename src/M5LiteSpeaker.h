@@ -1,9 +1,9 @@
-#ifndef __M5StackSPEAKER_H__
-#define __M5StackSPEAKER_H__
+#ifndef __M5LiteSpeaker_H__
+#define __M5LiteSpeaker_H__
 
-class M5StackSPEAKER {
+class M5LiteSpeaker {
   public:
-    M5StackSPEAKER(void) {
+    M5LiteSpeaker(void) {
     }
     void setPin(uint8_t pin, uint8_t pwm_ch) {
       _pin = pin;

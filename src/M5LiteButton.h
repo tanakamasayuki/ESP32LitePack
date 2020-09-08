@@ -1,7 +1,7 @@
-#ifndef __M5StackButton_H__
-#define __M5StackButton_H__
+#ifndef __M5LiteButton_H__
+#define __M5LiteButton_H__
 
-class M5StackButton {
+class M5LiteButton {
   public:
     void begin(int8_t pin, uint8_t invert, uint32_t dbTime) {
       _pin = pin;

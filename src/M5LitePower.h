@@ -1,5 +1,5 @@
-#ifndef __M5StackPower_H__
-#define __M5StackPower_H__
+#ifndef __M5LitePower_H__
+#define __M5LitePower_H__
 
 #include "I2C_IP5306.h"
 
@@ -8,10 +8,10 @@
 #define SLEEP_MIN(us)   (((uint64_t)us) * 60L * 1000000L)
 #define SLEEP_HR(us)    (((uint64_t)us) * 60L * 60L * 1000000L)
 
-class M5StackPOWER
+class M5LitePower
 {
   public:
-    M5StackPOWER() {
+    M5LitePower() {
     }
 
     void setIP5306(I2C_IP5306 *ip5306) {

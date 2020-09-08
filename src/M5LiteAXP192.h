@@ -1,34 +1,58 @@
-#ifndef __M5StackAXP192_H__
-#define __M5StackAXP192_H__
+#ifndef __M5LiteAXP192_H__
+#define __M5LiteAXP192_H__
 
 #include <I2C_AXP192.h>
 
-class M5StackAXP192 {
+class M5LiteAXP192 {
   public:
     void begin(bool disableLDO2 = false, bool disableLDO3 = false, bool disableRTC = false, bool disableDCDC1 = false, bool disableDCDC3 = false) {
       if (!enable) {
         return;
       }
 
-      I2C_AXP192_InitDef initDef = {
-        .EXTEN  = true,
-        .BACKUP = true,
-        .DCDC1  = disableDCDC1 ? -1 : 3300,
-        .DCDC2  = 0,
-        .DCDC3  = disableDCDC3 ? -1 : -1,
-        .LDO2   = disableLDO2  ? -1 : 3000,
-        .LDO3   = disableLDO3  ? -1 : 3000,
-        .GPIO0  = disableRTC   ? -1 : 2800,
-        .GPIO1  = -1,
-        .GPIO2  = -1,
-        .GPIO3  = -1,
-        .GPIO4  = -1,
-      };
-      _axp192->begin(initDef);
+      if (_board == lgfx::board_M5StackCore2) {
+        // M5Stack Core2
+        I2C_AXP192_InitDef initDef = {
+          .EXTEN  = true,
+          .BACKUP = true,
+          .DCDC1  = 3350,
+          .DCDC2  = 0,
+          .DCDC3  = 2800,
+          .LDO2   = 0,
+          .LDO3   = 0,
+          .GPIO0  = 2800,
+          .GPIO1  = -1,
+          .GPIO2  = -1,
+          .GPIO3  = -1,
+          .GPIO4  = -1,
+        };
+        //_axp192->begin(initDef);
+      } else if (_board == lgfx::board_M5StickC || _board == lgfx::board_M5StickCPlus) {
+        // M5StickC
+        I2C_AXP192_InitDef initDef = {
+          .EXTEN  = true,
+          .BACKUP = true,
+          .DCDC1  = disableDCDC1 ? -1 : 3300,
+          .DCDC2  = 0,
+          .DCDC3  = disableDCDC3 ? -1 : -1,
+          .LDO2   = disableLDO2  ? -1 : 3000,
+          .LDO3   = disableLDO3  ? -1 : 3000,
+          .GPIO0  = disableRTC   ? -1 : 2800,
+          .GPIO1  = -1,
+          .GPIO2  = -1,
+          .GPIO3  = -1,
+          .GPIO4  = -1,
+        };
+        _axp192->begin(initDef);
+      }
     }
 
     void setAXP192(I2C_AXP192 *axp192) {
       _axp192 = axp192;
+    }
+
+    void setBoard(int board) {
+      _board = board;
     }
 
     void ScreenBreath(uint8_t brightness) {
@@ -216,25 +240,41 @@ class M5StackAXP192 {
       if (!enable) {
         return 0;
       }
-      return _axp192->getAcinVolatge() / 1000.0;
+      if (_board == lgfx::board_M5StackCore2) {
+        return _axp192->getVbusVoltage() / 1000.0;
+      } else {
+        return _axp192->getAcinVolatge() / 1000.0;
+      }
     }
     float GetVinCurrent() {
       if (!enable) {
         return 0;
       }
-      return _axp192->getAcinCurrent();
+      if (_board == lgfx::board_M5StackCore2) {
+        return _axp192->getVbusCurrent();
+      } else {
+        return _axp192->getAcinCurrent();
+      }
     }
     float GetVBusVoltage() {
       if (!enable) {
         return 0;
       }
-      return _axp192->getVbusVoltage() / 1000.0;
+      if (_board == lgfx::board_M5StackCore2) {
+        return _axp192->getAcinVolatge() / 1000.0;
+      } else {
+        return _axp192->getVbusVoltage() / 1000.0;
+      }
     }
     float GetVBusCurrent() {
       if (!enable) {
         return 0;
       }
-      return _axp192->getVbusCurrent();
+      if (_board == lgfx::board_M5StackCore2) {
+        return _axp192->getAcinCurrent();
+      } else {
+        return _axp192->getVbusCurrent();
+      }
     }
     float GetTempInAXP192() {
       if (!enable) {
@@ -320,6 +360,7 @@ class M5StackAXP192 {
 
   private:
     I2C_AXP192 *_axp192;
+    int _board;
 };
 
 #endif

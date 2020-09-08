@@ -1,13 +1,13 @@
 #######################################
-# Syntax Coloring Map For M5StackAuto
+# Syntax Coloring Map For M5Lite
 #######################################
 
 #######################################
 # Library (KEYWORD3)
 #######################################
 
+M5Lite	KEYWORD3
 M5	KEYWORD3
-m5	KEYWORD3
 
 #######################################
 # Datatypes (KEYWORD1)
@@ -21,6 +21,8 @@ BtnA	KEYWORD1
 BtnB	KEYWORD1
 BtnC	KEYWORD1
 dis	KEYWORD1
+Ex	KEYWORD1
+Debug	KEYWORD1
 
 #######################################
 # Methods and Functions (KEYWORD2)
