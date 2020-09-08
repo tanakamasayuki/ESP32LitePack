@@ -1,21 +1,20 @@
+#include <WiFi.h>     // Define before M5Lite
 #include "M5Lite.h"
 
 void setup() {
   M5Lite.begin();
   M5Lite.Axp.ScreenBreath(10);
 
-  Serial.printf("Lcd Width=%d, Height=%d\n", M5Lite.Lcd.width(), M5Lite.Lcd.height());
-
   M5Lite.Imu.Init();
-  Serial.printf("IMU : %d\n", M5Lite.Imu.imuType);
 
   M5Lite.dis.drawpix(0, CRGB(255, 0, 0));
   M5Lite.dis.drawpix(2, CRGB(0, 255, 0));
   M5Lite.dis.drawpix(4, CRGB(0, 0, 255));
   M5Lite.dis.drawpix(6, CRGB::White);
 
-  // Not Support(ESP_LOGE)
-  M5Lite.Axp.GetWarningLevel();
+  // Info & Help
+  M5Lite.Debug.dispInfo();
+  M5Lite.Debug.dispHelp();
 }
 
 void loop() {
