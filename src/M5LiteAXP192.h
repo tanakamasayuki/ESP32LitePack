@@ -12,21 +12,7 @@ class M5LiteAXP192 {
 
       if (_board == lgfx::board_M5StackCore2) {
         // M5Stack Core2
-        I2C_AXP192_InitDef initDef = {
-          .EXTEN  = true,
-          .BACKUP = true,
-          .DCDC1  = 3350,
-          .DCDC2  = 0,
-          .DCDC3  = 2800,
-          .LDO2   = 0,
-          .LDO3   = 0,
-          .GPIO0  = 2800,
-          .GPIO1  = -1,
-          .GPIO2  = -1,
-          .GPIO3  = -1,
-          .GPIO4  = -1,
-        };
-        //_axp192->begin(initDef);
+        writeByte(0x92, 0x00);  // GPIO1 OpenDrain
       } else if (_board == lgfx::board_M5StickC || _board == lgfx::board_M5StickCPlus) {
         // M5StickC
         I2C_AXP192_InitDef initDef = {
@@ -66,176 +52,20 @@ class M5LiteAXP192 {
       _axp192->setLDO2(1800 + brightness * 100);
     }
 
-    bool GetBatState() __attribute__((deprecated)) {
-      // TODO
-      ESP_LOGE("AXP192", "Not Support");
-      return true;
-    }
-
-    uint8_t GetInputPowerStatus() __attribute__((deprecated)) {
-      // TODO
-      ESP_LOGE("AXP192", "Not Support");
-      return 0;
-    }
-    uint8_t GetBatteryChargingStatus() __attribute__((deprecated)) {
-      // TODO
-      ESP_LOGE("AXP192", "Not Support");
-      return 0;
-    }
-
-    void DisableAllIRQ(void) __attribute__((deprecated)) {
-      // TODO
-      ESP_LOGE("AXP192", "Not Support");
-    }
-    void ClearAllIRQ(void) __attribute__((deprecated)) {
-      // TODO
-      ESP_LOGE("AXP192", "Not Support");
-    }
-    void EnablePressIRQ(bool short_press, bool long_press) __attribute__((deprecated)) {
-      // TODO
-      ESP_LOGE("AXP192", "Not Support");
-    }
-    void GetPressIRQ(bool *short_press, bool* long_press) __attribute__((deprecated)) {
-      // TODO
-      ESP_LOGE("AXP192", "Not Support");
-    }
-    void ClearPressIRQ(bool short_press, bool long_press) __attribute__((deprecated)) {
-      // TODO
-      ESP_LOGE("AXP192", "Not Support");
-    }
-
-    void EnableCoulombcounter(void) __attribute__((deprecated)) {
-      // TODO
-      ESP_LOGE("AXP192", "Not Support");
-    }
-    void DisableCoulombcounter(void) __attribute__((deprecated)) {
-      // TODO
-      ESP_LOGE("AXP192", "Not Support");
-    }
-    void StopCoulombcounter(void) __attribute__((deprecated)) {
-      // TODO
-      ESP_LOGE("AXP192", "Not Support");
-    }
-    void ClearCoulombcounter(void) __attribute__((deprecated)) {
-      // TODO
-      ESP_LOGE("AXP192", "Not Support");
-    }
-    uint32_t GetCoulombchargeData(void) __attribute__((deprecated)) {
-      // TODO
-      ESP_LOGE("AXP192", "Not Support");
-      return 0;
-    }
-    uint32_t GetCoulombdischargeData(void) __attribute__((deprecated)) {
-      // TODO
-      ESP_LOGE("AXP192", "Not Support");
-      return 0;
-    }
-    float GetCoulombData(void) __attribute__((deprecated)) {
-      // TODO
-      ESP_LOGE("AXP192", "Not Support");
-      return 0;
-    }
-
-    uint16_t GetVbatData(void) __attribute__((deprecated)) {
-      // TODO
-      ESP_LOGE("AXP192", "Not Support");
-      return 0;
-    }
-    uint16_t GetIchargeData(void) __attribute__((deprecated)) {
-      // TODO
-      ESP_LOGE("AXP192", "Not Support");
-      return 0;
-    }
-    uint16_t GetIdischargeData(void) __attribute__((deprecated)) {
-      // TODO
-      ESP_LOGE("AXP192", "Not Support");
-      return 0;
-    }
-    uint16_t GetTempData(void) __attribute__((deprecated)) {
-      // TODO
-      ESP_LOGE("AXP192", "Not Support");
-      return 0;
-    }
-    uint32_t GetPowerbatData(void) __attribute__((deprecated)) {
-      // TODO
-      ESP_LOGE("AXP192", "Not Support");
-      return 0;
-    }
-    uint16_t GetVinData(void) __attribute__((deprecated)) {
-      // TODO
-      ESP_LOGE("AXP192", "Not Support");
-      return 0;
-    }
-    uint16_t GetIinData(void) __attribute__((deprecated)) {
-      // TODO
-      ESP_LOGE("AXP192", "Not Support");
-      return 0;
-    }
-    uint16_t GetVusbinData(void) __attribute__((deprecated)) {
-      // TODO
-      ESP_LOGE("AXP192", "Not Support");
-      return 0;
-    }
-    uint16_t GetIusbinData(void) __attribute__((deprecated)) {
-      // TODO
-      ESP_LOGE("AXP192", "Not Support");
-      return 0;
-    }
-    uint16_t GetVapsData(void) __attribute__((deprecated)) {
-      // TODO
-      ESP_LOGE("AXP192", "Not Support");
-      return 0;
-    }
-    uint8_t GetBtnPress(void) __attribute__((deprecated)) {
-      // TODO
-      ESP_LOGE("AXP192", "Not Support");
-      return 0;
-    }
-
-    void SetSleep(void) __attribute__((deprecated)) {
-      // TODO
-      ESP_LOGE("AXP192", "Not Support");
-    }
-    void DeepSleep(uint64_t time_in_us = 0) __attribute__((deprecated)) {
-      // TODO
-      ESP_LOGE("AXP192", "Not Support");
-    }
-    void LightSleep(uint64_t time_in_us = 0) __attribute__((deprecated)) {
-      // TODO
-      ESP_LOGE("AXP192", "Not Support");
-    }
-
-    uint8_t GetWarningLeve(void) __attribute__((deprecated)) {
-      // TODO
-      ESP_LOGE("AXP192", "Not Support");
-      return 0;
-    }
-
-    void SetChargeVoltage(uint8_t) __attribute__((deprecated)) {
-      // TODO
-      ESP_LOGE("AXP192", "Not Support");
-    }
-    void SetChargeCurrent(uint8_t) __attribute__((deprecated)) {
-      // TODO
-      ESP_LOGE("AXP192", "Not Support");
-    }
-    void SetVOff(uint8_t voltage) __attribute__((deprecated)) {
-      // TODO
-      ESP_LOGE("AXP192", "Not Support");
-    }
-
     float GetBatVoltage() {
       if (!enable) {
         return 0;
       }
       return _axp192->getBatteryVoltage() / 1000.0;
     }
+
     float GetBatCurrent() {
       if (!enable) {
         return 0;
       }
       return _axp192->getBatteryChargeCurrent() - _axp192->getBatteryDischargeCurrent();
     }
+
     float GetVinVoltage() {
       if (!enable) {
         return 0;
@@ -246,6 +76,7 @@ class M5LiteAXP192 {
         return _axp192->getAcinVolatge() / 1000.0;
       }
     }
+
     float GetVinCurrent() {
       if (!enable) {
         return 0;
@@ -256,6 +87,7 @@ class M5LiteAXP192 {
         return _axp192->getAcinCurrent();
       }
     }
+
     float GetVBusVoltage() {
       if (!enable) {
         return 0;
@@ -266,6 +98,7 @@ class M5LiteAXP192 {
         return _axp192->getVbusVoltage() / 1000.0;
       }
     }
+
     float GetVBusCurrent() {
       if (!enable) {
         return 0;
@@ -276,68 +109,33 @@ class M5LiteAXP192 {
         return _axp192->getVbusCurrent();
       }
     }
+
     float GetTempInAXP192() {
       if (!enable) {
         return 0;
       }
       return _axp192->getInternalTemperature();
     }
+
     float GetBatPower() {
       if (!enable) {
         return 0;
       }
       return _axp192->getBatteryPower();
     }
+
     float GetBatChargeCurrent() {
       if (!enable) {
         return 0;
       }
       return _axp192->getBatteryChargeCurrent();
     }
+
     float GetAPSVoltage() {
       if (!enable) {
         return 0;
       }
       return _axp192->getApsVoltage() / 1000.0;
-    }
-    float GetBatCoulombInput() __attribute__((deprecated)) {
-      // TODO
-      ESP_LOGE("AXP192", "Not Support");
-      return 0;
-    }
-    float GetBatCoulombOut() __attribute__((deprecated)) {
-      // TODO
-      ESP_LOGE("AXP192", "Not Support");
-      return 0;
-    }
-    uint8_t GetWarningLevel(void) __attribute__((deprecated)) {
-      // TODO
-      ESP_LOGE("AXP192", "Not Support");
-      return 0;
-    }
-    void SetCoulombClear()  __attribute__((deprecated)) {
-      // TODO
-      ESP_LOGE("AXP192", "Not Support");
-    }
-    void SetLDO2(bool State) __attribute__((deprecated)) {
-      // TODO
-      ESP_LOGE("AXP192", "Not Support");
-    }
-    void SetLDO3(bool State) __attribute__((deprecated)) {
-      // TODO
-      ESP_LOGE("AXP192", "Not Support");
-    }
-    void SetGPIO0(bool State) __attribute__((deprecated)) {
-      // TODO
-      ESP_LOGE("AXP192", "Not Support");
-    }
-    void SetAdcState(bool State) __attribute__((deprecated)) {
-      // TODO
-      ESP_LOGE("AXP192", "Not Support");
-    }
-    void SetAdcRate(uint8_t rate) __attribute__((deprecated)) {
-      // TODO
-      ESP_LOGE("AXP192", "Not Support");
     }
 
     void PowerOff() {
@@ -347,13 +145,51 @@ class M5LiteAXP192 {
       _axp192->powerOff();
     }
 
-    void Read6BytesStorage(uint8_t *bufPtr) __attribute__((deprecated)) {
-      // TODO
-      ESP_LOGE("AXP192", "Not Support");
+    void SetLed(uint8_t state) {
+      if (state) {
+        bitOff(0x94, 0x02);
+      } else {
+        bitOn(0x94, 0x02);
+      }
     }
-    void Write6BytesStorage(uint8_t *bufPtr) __attribute__((deprecated)) {
-      // TODO
-      ESP_LOGE("AXP192", "Not Support");
+
+    void SetVibration(uint8_t state) {
+      if (!state) {
+        bitOff(0x12, 0x08);
+      } else {
+        bitOn(0x12, 0x08);
+      }
+    }
+
+    uint8_t readByte(uint8_t address) {
+      _i2cPort->beginTransmission(_deviceAddress);
+      _i2cPort->write(address);
+      _i2cPort->endTransmission();
+      _i2cPort->requestFrom(_deviceAddress, 1);
+      uint8_t val = _i2cPort->read();
+
+      ESP_LOGD("AXP192", "readByte(%02X) = %02X", address, val);
+      return val;
+    }
+
+    void writeByte(uint8_t address, uint8_t data) {
+      _i2cPort->beginTransmission(_deviceAddress);
+      _i2cPort->write(address);
+      _i2cPort->write(data);
+      _i2cPort->endTransmission();
+      ESP_LOGD("AXP192", "writeByte(%02X) = %02X", address, data);
+    }
+
+    void bitOn(uint8_t address, uint8_t bit) {
+      uint8_t add = address;
+      uint8_t val = readByte(add) | bit;
+      writeByte(add, val);
+    }
+
+    void bitOff(uint8_t address, uint8_t bit) {
+      uint8_t add = address;
+      uint8_t val = readByte(add) & ~bit;
+      writeByte(add, val);
     }
 
     int enable = 0;
@@ -361,6 +197,9 @@ class M5LiteAXP192 {
   private:
     I2C_AXP192 *_axp192;
     int _board;
+
+    TwoWire *_i2cPort = &Wire1;
+    int _deviceAddress = 0x34;
 };
 
 #endif

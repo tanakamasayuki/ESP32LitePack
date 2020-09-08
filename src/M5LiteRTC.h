@@ -25,10 +25,6 @@ class M5LiteRTC {
       }
       rtc.begin();
     }
-    void GetBm8563Time(void) __attribute__((deprecated)) {
-      // TODO
-      ESP_LOGE("RTC", "Not Support");
-    }
 
     void SetTime(RTC_TimeTypeDef* RTC_TimeStruct) {
       if (!enable) {

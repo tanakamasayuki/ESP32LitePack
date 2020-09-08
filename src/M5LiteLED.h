@@ -47,19 +47,6 @@ class M5LiteLED {
       }
     }
 
-    void animation(uint8_t *buffptr, uint8_t amspeed, uint8_t ammode, int64_t amcount = -1) __attribute__((deprecated)){
-      // TODO
-      ESP_LOGE("M5LiteLED", "Not Support");
-    }
-    void displaybuff(uint8_t *buffptr, int8_t offsetx = 0, int8_t offsety = 0) __attribute__((deprecated)){
-      // TODO
-      ESP_LOGE("M5LiteLED", "Not Support");
-    }
-    void MoveDisPlayBuff(int8_t offsetx = 0, int8_t offsety = 0) __attribute__((deprecated)){
-      // TODO
-      ESP_LOGE("M5LiteLED", "Not Support");
-    }
-
     void setBrightness(uint8_t brightness) {
       if (20 < brightness) {
         brightness = 20;
@@ -68,6 +55,7 @@ class M5LiteLED {
       FastLED.setBrightness(brightness);
       xSemaphoreGive(_xSemaphore);
     }
+
     void drawpix(uint8_t xpos, uint8_t ypos, CRGB Color) {
       if ((5 <= xpos) || (5 <= ypos))   {
         return;
@@ -76,6 +64,7 @@ class M5LiteLED {
       _ledbuff[ypos * 5 + xpos] = Color;
       xSemaphoreGive(_xSemaphore);
     }
+
     void drawpix(uint8_t Number, CRGB Color) {
       if (Number >= 25) {
         return;
@@ -84,6 +73,7 @@ class M5LiteLED {
       _ledbuff[Number] = Color;
       xSemaphoreGive(_xSemaphore);
     }
+
     void clear() {
       xSemaphoreTake(_xSemaphore, portMAX_DELAY);
       for (int8_t i = 0; i < NUM_LEDS; i++) {

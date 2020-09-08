@@ -20,17 +20,25 @@ class M5LiteEx {
     M5LiteSpeaker *_Beep;
     M5LiteLED *_dis;
     M5LiteDebug *_Debug;
+    M5LiteTouch *_Touch;
 
     void update(void) {
+      _Touch->update();
       _BtnA->read();
       _BtnB->read();
       _BtnC->read();
+      update2();
+    }
+
+    void update2(void) {
       _Beep->update();
       _Debug->update();
     }
 
     void delay(unsigned long ms) {
       const unsigned long tick = 50;
+
+      update();
 
       while (0 < ms) {
         if (tick < ms) {
@@ -40,11 +48,51 @@ class M5LiteEx {
           ::delay(ms);
           ms = 0;
         }
-        update();
+        update2();
       }
     }
 
+    void setLed(bool state) {
+      static int8_t now = -1;
+
+      if (now == state) {
+        return;
+      }
+      now = state;
+
+      if (_ledPin == -1) {
+        // Non LED
+        return;
+      } else if (_ledPin < 40) {
+        // GPIO
+        pinMode(_ledPin, OUTPUT);
+        digitalWrite(_ledPin, !state);
+      } else if (_ledPin == 100) {
+        // AXP192
+        _Axp->SetLed(state);
+      }
+    }
+
+    void setVibration(bool state) {
+      static int8_t now = -1;
+
+      if (now == state) {
+        return;
+      }
+      now = state;
+
+      if (_ledPin == 100){
+        // AXP192
+        _Axp->SetVibration(state);
+      }
+    }
+
+    void setPin(int8_t ledPin) {
+      _ledPin = ledPin;
+    }
+
   private:
+    int8_t _ledPin;
 };
 
 #endif

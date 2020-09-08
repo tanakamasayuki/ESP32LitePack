@@ -16,6 +16,7 @@ class M5LiteDebug {
     M5LitePower *_Power;
     M5LiteSpeaker *_Beep;
     M5LiteLED *_dis;
+    M5LiteTouch *_Touch;
 
     void dispHelp(void) {
       Serial.println("M5Lite Debug Command List");

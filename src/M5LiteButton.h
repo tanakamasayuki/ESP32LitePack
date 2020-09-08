@@ -8,7 +8,7 @@ class M5LiteButton {
       if (_pin == -1) {
         return;
       }
-      if (_pin != 99) {
+      if (_pin < 40) {
         pinMode(_pin, INPUT);
       }
       _invert = invert;
@@ -27,12 +27,40 @@ class M5LiteButton {
       _axp192 = axp192;
     }
 
+    void setTouch(M5LiteTouch *Touch) {
+      _Touch = Touch;
+    }
+
     uint8_t getPin(void) {
       if (_pin == -1) {
         return 0;
-      } else if (_pin == 99) {
+      } else if (_pin == 100) {
         // AXP192 Pek
         return _axp192->getPekPress() != 0;
+      } else if (_pin == 101) {
+        // Touch A
+        TouchPoint_t p = _Touch->getPressPoint();
+        if (240 < p.y && p.x <= 106) {
+          return true;
+        } else {
+          return false;
+        }
+      } else if (_pin == 102) {
+        // Touch B
+        TouchPoint_t p = _Touch->getPressPoint();
+        if (240 < p.y && 106 < p.x && p.x < 212) {
+          return true;
+        } else {
+          return false;
+        }
+      } else if (_pin == 103) {
+        // Touch C
+        TouchPoint_t p = _Touch->getPressPoint();
+        if (240 < p.y && 212 <= p.x) {
+          return true;
+        } else {
+          return false;
+        }
       }
 
       if (_invert) {
@@ -52,8 +80,7 @@ class M5LiteButton {
         _time = nowtime;
         _changed = 0;
         return _state;
-      }
-      else {
+      } else {
         _lastTime = _time;
         _time = nowtime;
         _lastState = _state;
@@ -64,8 +91,7 @@ class M5LiteButton {
           if (_state) {
             _pressTime = _time;
           }
-        }
-        else {
+        } else {
           _changed = 0;
         }
         return _state;
@@ -112,6 +138,7 @@ class M5LiteButton {
     uint32_t _hold_time;
 
     I2C_AXP192 *_axp192;
+    M5LiteTouch *_Touch;
 };
 
 #endif

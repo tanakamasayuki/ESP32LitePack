@@ -7,6 +7,7 @@
 #include <LGFX_TFT_eSPI.hpp>  // https://github.com/lovyan03/LovyanGFX
 #include "M5LiteAXP192.h"
 #include "M5LiteRTC.h"
+#include "M5LiteTouch.h"
 #include "M5LiteButton.h"
 #include "M5LiteIMU.h"
 #include "M5LiteMPU6886.h"
@@ -68,6 +69,9 @@ class M5LiteBase {
       Imu.setBMA423(&bma423);
       Power.setIP5306(&ip5306);
       BtnC.setAXP192(&axp192);
+      BtnA.setTouch(&Touch);
+      BtnB.setTouch(&Touch);
+      BtnC.setTouch(&Touch);
 
       // LCD INIT
       if (LCDEnable) {
@@ -91,16 +95,17 @@ class M5LiteBase {
           // M5Stack Core2
           Serial.print("(M5Stack Core2)");
           M5_IR             = -1;
-          M5_LED            = -1;
-          BUTTON_A_PIN      = -1;
-          BUTTON_B_PIN      = -1;
-          BUTTON_C_PIN      = -1;
+          M5_LED            = 100;
+          BUTTON_A_PIN      = 101;
+          BUTTON_B_PIN      = 102;
+          BUTTON_C_PIN      = 103;
           SPEAKER_PIN       = -1;
           TONE_PIN_CHANNEL  =  0;
           TFCARD_CS_PIN     =  4;
 
           Axp.enable = true;
           Rtc.enable = true;
+          Touch.enable = true;
 
           Wire1.begin(21, 22);
         } else if (Ex.board == lgfx::board_M5StickC) {
@@ -110,7 +115,7 @@ class M5LiteBase {
           M5_LED            = 10;
           BUTTON_A_PIN      = 37;
           BUTTON_B_PIN      = 39;
-          BUTTON_C_PIN      = 99;
+          BUTTON_C_PIN      = 100;
           SPEAKER_PIN       = -1;
           TONE_PIN_CHANNEL  = -1;
           TFCARD_CS_PIN     = -1;
@@ -126,7 +131,7 @@ class M5LiteBase {
           M5_LED            = 10;
           BUTTON_A_PIN      = 37;
           BUTTON_B_PIN      = 39;
-          BUTTON_C_PIN      = 99;
+          BUTTON_C_PIN      = 100;
           SPEAKER_PIN       =  2;
           TONE_PIN_CHANNEL  =  0;
           TFCARD_CS_PIN     = -1;
@@ -211,6 +216,7 @@ class M5LiteBase {
       Debug._Power = &Power;
       Debug._Beep = &Beep;
       Debug._dis = &dis;
+      Debug._Touch = &Touch;
       Ex._Lcd = &Lcd;
       Ex._Axp = &Axp;
       Ex._BtnA = &BtnA;
@@ -224,7 +230,12 @@ class M5LiteBase {
       Ex._Power = &Power;
       Ex._Beep = &Beep;
       Ex._dis = &dis;
+      Ex._Touch = &Touch;
       Ex._Debug = &Debug;
+
+      Ex.setPin(M5_LED);
+
+      Touch.setLcd(&Lcd);
 
       if (SerialEnable) {
         Serial.println(" initializing...OK");
@@ -252,6 +263,7 @@ class M5LiteBase {
     M5LitePower Power;
     M5LiteSpeaker Beep;
     M5LiteLED dis;
+    M5LiteTouch Touch;
 
     M5LiteDebug Debug;
     M5LiteEx Ex;

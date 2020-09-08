@@ -51,11 +51,6 @@ class M5LitePower
       SHUTDOWN_64S
     };
 
-    bool setKeepLightLoad(bool en) __attribute__((deprecated)) {
-      // TODO
-      ESP_LOGE("Power", "Not Support");
-      return false;
-    }
     bool setPowerBoostKeepOn(bool en) {
       if (!enable) {
         return false;
@@ -69,11 +64,6 @@ class M5LitePower
       }
       _ip5306->setBoosOnLoad(en);
       return true;
-    }
-    bool setLowPowerShutdown(bool en) __attribute__((deprecated)) {
-      // TODO
-      ESP_LOGE("Power", "Not Support");
-      return false;
     }
     bool setLowPowerShutdownTime(ShutdownTime time) {
       if (!enable) {
@@ -157,46 +147,6 @@ class M5LitePower
         return false;
       }
       return _ip5306->getBatteryLevel();
-    }
-    bool batteryMode(bool en) __attribute__((deprecated)) {
-      // TODO
-      ESP_LOGE("Power", "Not Support");
-      return false;
-    }
-
-    void setWakeupButton(uint8_t button) __attribute__((deprecated)) {
-      // TODO
-      ESP_LOGE("Power", "Not Support");
-    }
-
-    bool isResetbyWatchdog() __attribute__((deprecated)) {
-      // TODO
-      ESP_LOGE("Power", "Not Support");
-      return false;
-    }
-    bool isResetbyDeepsleep() __attribute__((deprecated)) {
-      // TODO
-      ESP_LOGE("Power", "Not Support");
-      return false;
-    }
-    bool isResetbySoftware() __attribute__((deprecated)) {
-      // TODO
-      ESP_LOGE("Power", "Not Support");
-      return false;
-    }
-    bool isResetbyPowerSW() __attribute__((deprecated)) {
-      // TODO
-      ESP_LOGE("Power", "Not Support");
-      return false;
-    }
-
-    void deepSleep(uint64_t time_in_us = 0) __attribute__((deprecated)) {
-      // TODO
-      ESP_LOGE("Power", "Not Support");
-    }
-    void lightSleep(uint64_t time_in_us = 0) __attribute__((deprecated)) {
-      // TODO
-      ESP_LOGE("Power", "Not Support");
     }
 
     void powerOFF() {

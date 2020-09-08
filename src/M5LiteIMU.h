@@ -56,26 +56,6 @@ class M5LiteIMU {
       ESP_LOGE("IMU", "Not Support");
     }
 
-    void getAccelAdc(int16_t *ax, int16_t *ay, int16_t *az) __attribute__((deprecated)) {
-      // TODO
-      ESP_LOGE("IMU", "Not Support");
-      *ax = 0;
-      *ay = 0;
-      *az = 0;
-    }
-    void getGyroAdc(int16_t *gx, int16_t *gy, int16_t *gz) __attribute__((deprecated)) {
-      // TODO
-      ESP_LOGE("IMU", "Not Support");
-      *gx = 0;
-      *gy = 0;
-      *gz = 0;
-    }
-    void getTempAdc(int16_t *t) __attribute__((deprecated)) __attribute__((deprecated)) {
-      // TODO
-      ESP_LOGE("IMU", "Not Support");
-      *t = 0;
-    }
-
     void getAccelData(float *ax, float *ay, float *az) {
       if (imuType == IMU_MPU6886) {
         _mpu6886->getAccel(ax, ay, az);
@@ -97,6 +77,7 @@ class M5LiteIMU {
         *ay = -(*ay);
       }
     }
+
     void getGyroData(float *gx, float *gy, float *gz) {
       if (imuType == IMU_MPU6886) {
         _mpu6886->getGyro(gx, gy, gz);
@@ -113,6 +94,7 @@ class M5LiteIMU {
         *gz = -(*gz);
       }
     }
+
     void getTempData(float *t) {
       if (imuType == IMU_MPU6886) {
         _mpu6886->getTemp(t);
@@ -121,14 +103,6 @@ class M5LiteIMU {
       } else {
         *t = 0;
       }
-    }
-
-    void getAhrsData(float *pitch, float *roll, float *yaw) __attribute__((deprecated)) {
-      // TODO
-      ESP_LOGE("IMU", "Not Support");
-      *pitch = 0;
-      *roll = 0;
-      *yaw = 0;
     }
 
     ImuType imuType;

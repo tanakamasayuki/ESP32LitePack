@@ -94,6 +94,24 @@ void loop() {
   if (M5Lite.BtnC.wasReleased()) {
     Serial.println("M5Lite.BtnC.wasReleased()");
   }
+  if (M5Lite.Touch.enable) {
+    TouchPoint_t p = M5Lite.Touch.getPressPoint();
+    M5Lite.Lcd.printf("Touch\n");
+    M5Lite.Lcd.printf("  X : %4d\n", p.x);
+    M5Lite.Lcd.printf("  Y : %4d\n", p.y);
+  }
 
+  if (M5Lite.BtnA.isPressed()) {
+    M5Lite.Ex.setLed(true);
+  } else {
+    M5Lite.Ex.setLed(false);
+  }
+  if (M5Lite.BtnB.isPressed()) {
+    M5Lite.Ex.setVibration(true);
+  } else {
+    M5Lite.Ex.setVibration(false);
+  }
+
+  // delay & M5Lile.update()
   M5Lite.Ex.delay(100);
 }
