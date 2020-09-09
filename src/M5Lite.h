@@ -58,7 +58,7 @@ class M5LiteBase {
         Serial.begin(115200);
         Serial.flush();
         delay(200);
-        Serial.print("M5LiteBase");
+        Serial.print("M5Lite");
       }
 
       Axp.setAXP192(&axp192);

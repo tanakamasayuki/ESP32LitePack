@@ -26,6 +26,7 @@ https://github.com/tanakamasayuki/I2C_MPU6886
 - [M5Stack BASIC](https://docs.m5stack.com/#/en/core/basic)
 - [M5Stack GRAY](https://docs.m5stack.com/#/en/core/gray)
 - [M5Stack FIRE](https://docs.m5stack.com/#/en/core/fire)
+- [M5Stack CORE2](https://docs.m5stack.com/#/en/core/core2)
 - [M5Stack ATOM Lite](https://docs.m5stack.com/#/en/core/atom_lite)
 - [M5Stack ATOM Matrix](https://docs.m5stack.com/#/en/core/atom_matrix)
 - [M5Stack ATOM ECHO](https://docs.m5stack.com/#/en/atom/atomecho)

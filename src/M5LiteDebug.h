@@ -26,6 +26,7 @@ class M5LiteDebug {
       Serial.println(" IMU         : IMU Info");
       Serial.println(" RTC         : RTC Info");
       Serial.println(" MEM         : Memory Info");
+      Serial.println(" GPIO        : GPIO Info");
 #ifdef WiFi_h
       Serial.println(" WIFI        : Connect Wi-Fi(Last SSID & Key)");
       Serial.println(" NTP         : Sync NTP Server");
@@ -300,6 +301,150 @@ class M5LiteDebug {
     }
 #endif
 
+    typedef struct {
+      bool enable: 1;
+      bool pullup: 1;
+      bool pulldown: 1;
+      bool openDrain: 1;
+      bool adc: 1;
+      bool output: 1;
+      bool level: 1;
+    } gpio_info_t;
+
+    gpio_info_t getPinMode(uint8_t pin)
+    {
+      gpio_info_t info = {};
+
+      if (!digitalPinIsValid(pin)) {
+        return info;
+      }
+
+      info.enable = true;
+
+      uint32_t rtc_reg = rtc_gpio_desc[pin].reg;
+      if (rtc_reg) {
+        uint32_t reg_val = ESP_REG(rtc_reg);
+
+        if (reg_val & rtc_gpio_desc[pin].mux) {
+          info.adc = true;
+        }
+
+        if (reg_val & rtc_gpio_desc[pin].pullup) {
+          info.pullup = true;
+        }
+
+        if (reg_val & rtc_gpio_desc[pin].pulldown) {
+          info.pulldown = true;
+        }
+      }
+
+      if (pin > 33) {
+      } else if (pin < 32) {
+        if (ESP_REG(GPIO_ENABLE_REG) & ((uint32_t)1 << pin)) {
+          info.output = true;
+        }
+      } else {
+        if (ESP_REG(GPIO_ENABLE1_REG) & ((uint32_t)1 << (pin - 32))) {
+          info.output = true;
+        }
+      }
+
+      if (ESP_REG(DR_REG_IO_MUX_BASE + esp32_gpioMux[pin].reg) & FUN_PU) {
+        info.pullup = true;
+      }
+
+      if (ESP_REG(DR_REG_IO_MUX_BASE + esp32_gpioMux[pin].reg) & FUN_PD) {
+        info.pulldown = true;
+      }
+
+      if (GPIO.pin[pin].val & (1 << GPIO_PIN0_PAD_DRIVER_S)) {
+        info.openDrain = true;
+      }
+
+      if (pin < 32) {
+        if (ESP_REG(GPIO_IN_REG) & ((uint32_t)1 << pin)) {
+          info.level = true;
+        } else {
+          info.level = false;
+        }
+      } else {
+        if (ESP_REG(GPIO_IN1_REG) & ((uint32_t)1 << (pin - 32))) {
+          info.level = true;
+        } else {
+          info.level = false;
+        }
+      }
+
+      return info;
+    }
+
+    void dispGpio() {
+      Serial.println("GPIO LEVEL OUTPUT ADC PULLUP PULLDOWN OPEN_DRAIN I/O ADC     ");
+      Serial.println("-------------------------------------------------------------");
+      for (int i = 0; i < 40; i++) {
+        gpio_info_t gpioInfo = getPinMode(i);
+        Serial.printf("%4d ", i);
+        if (!gpioInfo.enable) {
+          Serial.println();
+          continue;
+        }
+
+        if (gpioInfo.level) {
+          Serial.print("HIGH  ");
+        } else {
+          Serial.print("LOW   ");
+        }
+
+        if (gpioInfo.output) {
+          Serial.print("OUTPUT ");
+        } else {
+          Serial.print("       ");
+        }
+
+        if (gpioInfo.adc) {
+          Serial.print("ADC ");
+        } else {
+          Serial.print("    ");
+        }
+
+        if (gpioInfo.pullup) {
+          Serial.print("PULLUP ");
+        } else {
+          Serial.print("       ");
+        }
+
+        if (gpioInfo.pulldown) {
+          Serial.print("PULLDOWN ");
+        } else {
+          Serial.print("         ");
+        }
+
+        if (gpioInfo.openDrain) {
+          Serial.print("OPEN_DRAIN ");
+        } else {
+          Serial.print("           ");
+        }
+
+        if (i < 34) {
+          Serial.print("I/O ");
+        } else {
+          Serial.print("I   ");
+        }
+
+        if (esp32_gpioMux[i].adc != -1) {
+          if (esp32_gpioMux[i].adc < 10) {
+            // ADC1
+            Serial.printf("ADC1_CH%d ", esp32_gpioMux[i].adc);
+          } else {
+            // ADC2
+            Serial.printf("ADC2_CH%d ", esp32_gpioMux[i].adc - 10);
+          }
+        }
+
+        Serial.println();
+      }
+    }
+
     void update() {
       while (Serial.available()) {
         String command = Serial.readStringUntil('\n');
@@ -320,6 +465,8 @@ class M5LiteDebug {
           dispRtc();
         } else if (command == "MEM") {
           dispMemory();
+        } else if (command == "GPIO") {
+          dispGpio();
 #ifdef WiFi_h
         } else if (command == "WIFI") {
           connectWiFi();
