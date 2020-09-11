@@ -595,6 +595,13 @@ _gpio_info_t getPinMode(uint8_t pin)
     }
   }
 
+  if (34 <= pin) {
+    // INPUT Only
+    info.pullup = false;
+    info.pulldown = false;
+    info.openDrain = false;
+  }
+
   return info;
 }
 
@@ -624,7 +631,7 @@ void dispGpio() {
   String pinMap[40];
   getPinMux(pinMap);
 
-  Serial.println("GPIO LEVEL OUTPUT ADC PULLUP PULLDOWN OPEN_DRAIN I/O NOTE ");
+  Serial.println("GPIO LEVEL MODE   ADC PULLUP PULLDOWN OPEN_DRAIN I/O NOTE ");
   Serial.println("-----------------------------------------------------------------------------");
   for (int i = 0; i < 40; i++) {
     _gpio_info_t gpioInfo = getPinMode(i);
@@ -643,7 +650,7 @@ void dispGpio() {
     if (gpioInfo.output) {
       Serial.print("OUTPUT ");
     } else {
-      Serial.print("       ");
+      Serial.print("INPUT  ");
     }
 
     if (gpioInfo.adc) {
