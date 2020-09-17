@@ -545,6 +545,7 @@ class M5LiteDebug {
       Serial.println(" RTC         : RTC Info");
       Serial.println(" MEM         : Memory Info");
       Serial.println(" GPIO        : GPIO Info");
+      Serial.println(" I2C         : I2C Scan");
 #ifdef WiFi_h
       Serial.println(" WIFI        : Connect Wi-Fi(Last SSID & Key)");
       Serial.println(" NTP         : Sync NTP Server");
@@ -772,7 +773,7 @@ class M5LiteDebug {
       }
 
       if (i == 100) {
-        Serial.print("TimeOut");
+        Serial.println("TimeOut");
       }
     }
 
@@ -987,6 +988,69 @@ class M5LiteDebug {
       }
     }
 
+    void dispI2c() {
+      Serial.printf("===============================================================\n");
+      Serial.printf("I2C Scan\n");
+      Serial.printf("===============================================================\n");
+
+      // Disp I2C
+      int i2c0SDA = -1;
+      int i2c0SCL = -1;
+      int i2c1SDA = -1;
+      int i2c1SCL = -1;
+      for (int i = 0; i < 40; i++) {
+        uint32_t reg = GPIO_FUNC0_OUT_SEL_CFG_REG + 0x04 * i;
+        uint32_t reg_val = ESP_REG(reg);
+        int func = reg_val & 0b111111111;
+        if (func == I2CEXT0_SDA_IN_IDX) {
+          i2c0SDA = i;
+        } else if (func == I2CEXT0_SCL_IN_IDX) {
+          i2c0SCL = i;
+        } else if (func == I2CEXT1_SDA_IN_IDX) {
+          i2c1SDA = i;
+        } else if (func == I2CEXT1_SCL_IN_IDX) {
+          i2c1SCL = i;
+        }
+      }
+
+      if (i2c0SDA != -1 && i2c0SCL != -1) {
+        // Wire
+        Serial.printf("Wire(I2C0) SDA:%2d SCL:%2d\n", i2c0SDA, i2c0SCL);
+        for (byte address = 0; address <= 127; address++) {
+          Wire.beginTransmission(address);
+          byte error = Wire.endTransmission();
+          if (error == 0) {
+            Serial.printf("%02X ", address);
+          } else {
+            Serial.print(".. ");
+            if (address % 16 == 15) {
+              Serial.println();
+            }
+          }
+          delay(1);
+        }
+        Serial.println();
+      }
+      if (i2c1SDA != -1 && i2c1SCL != -1) {
+        // Wire1
+        Serial.printf("Wire1(I2C1) SDA:%2d SCL:%2d\n", i2c1SDA, i2c1SCL);
+        for (byte address = 0; address <= 127; address++) {
+          Wire1.beginTransmission(address);
+          byte error = Wire1.endTransmission();
+          if (error == 0) {
+            Serial.printf("%02X ", address);
+          } else {
+            Serial.print(".. ");
+            if (address % 16 == 15) {
+              Serial.println();
+            }
+          }
+          delay(1);
+        }
+        Serial.println();
+      }
+    }
+
     void update() {
       while (Serial.available()) {
         String command = Serial.readStringUntil('\n');
@@ -1009,6 +1073,8 @@ class M5LiteDebug {
           dispMemory();
         } else if (command == "GPIO") {
           dispGpio();
+        } else if (command == "I2C") {
+          dispI2c();
 #ifdef WiFi_h
         } else if (command == "WIFI") {
           connectWiFi();
