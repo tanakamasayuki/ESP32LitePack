@@ -161,6 +161,14 @@ class M5LiteAXP192 {
       }
     }
 
+    void SetSpkEnable(uint8_t state) {
+      if (!state) {
+        bitOff(0x94, 0x04);
+      } else {
+        bitOn(0x94, 0x04);
+      }
+    }
+
     uint8_t readByte(uint8_t address) {
       _i2cPort->beginTransmission(_deviceAddress);
       _i2cPort->write(address);

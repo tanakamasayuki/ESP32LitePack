@@ -6,6 +6,8 @@ class M5LiteEx {
     int board = 0;
     bool useLcd = true;
 
+    M5LiteSound Sound;
+
     TFT_eSPI *_Lcd;
     M5LiteAXP192 *_Axp;
     M5LiteButton *_BtnA;

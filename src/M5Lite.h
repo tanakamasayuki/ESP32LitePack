@@ -16,6 +16,7 @@
 #include "M5LiteCommUtil.h"
 #include "M5LiteSpeaker.h"
 #include "M5LiteLED.h"
+#include "M5LiteSound.h"
 #include "M5LiteDebug.h"
 #include "M5LiteEx.h"
 
@@ -90,6 +91,8 @@ class M5LiteBase {
           TONE_PIN_CHANNEL  =  0;
           TFCARD_CS_PIN     =  4;
 
+          Ex.Sound.begin();
+
           Wire1.begin(21, 22);
         } else if (Ex.board == lgfx::board_M5StackCore2) {
           // M5Stack Core2
@@ -106,6 +109,7 @@ class M5LiteBase {
           Axp.enable = true;
           Rtc.enable = true;
           Touch.enable = true;
+          Ex.Sound.begin();
 
           Wire1.begin(21, 22);
         } else if (Ex.board == lgfx::board_M5StickC) {
@@ -202,6 +206,9 @@ class M5LiteBase {
       BtnC.begin(BUTTON_C_PIN, true, DEBOUNCE_MS);
 
       Beep.setPin(SPEAKER_PIN, TONE_PIN_CHANNEL);
+
+      Ex.Sound.setAXP(&Axp);
+      Ex.Sound.setBoard(Ex.board);
 
       Debug._Lcd = &Lcd;
       Debug._Axp = &Axp;
