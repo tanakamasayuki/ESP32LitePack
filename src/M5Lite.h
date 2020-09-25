@@ -1,12 +1,18 @@
 #ifndef __M5Lite_H__
 #define __M5Lite_H__
 
+#include <Arduino.h>
+#include <Wire.h>
+#include <SPI.h>
+#include "FS.h"
+#include "SD.h"
 #include "SPIFFS.h"
 #include <Preferences.h>
 #include "nvs_flash.h"
 
-#define LGFX_M5STACK          // M5Stack
-#define LGFX_M5STICKC         // M5Stick C
+#define LGFX_M5STACK          // M5Stack (Basic / Gray / Go / Fire)
+#define LGFX_M5STACKCORE2     // M5StackCore2
+#define LGFX_M5STICKC         // M5Stick C / CPlus
 #define LGFX_TTGO_TWATCH      // TTGO T-Watch
 #include <LGFX_TFT_eSPI.hpp>  // https://github.com/lovyan03/LovyanGFX
 #include "M5LiteAXP192.h"
@@ -96,6 +102,7 @@ class M5LiteBase {
           TFCARD_CS_PIN     =  4;
 
           Ex.Sound.begin();
+          SD.begin(TFCARD_CS_PIN, SPI, 20000000);
 
           Wire1.begin(21, 22);
         } else if (Ex.board == lgfx::board_M5StackCore2) {
@@ -113,7 +120,9 @@ class M5LiteBase {
           Axp.enable = true;
           Rtc.enable = true;
           Touch.enable = true;
+
           Ex.Sound.begin();
+          SD.begin(TFCARD_CS_PIN, SPI, 20000000);
 
           Wire1.begin(21, 22);
         } else if (Ex.board == lgfx::board_M5StickC) {

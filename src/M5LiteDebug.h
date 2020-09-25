@@ -553,6 +553,7 @@ class M5LiteDebug {
       Serial.println(" WIFI [SSID] [KEY]    : Connect Wi-Fi(default Last SSID & Key)");
       Serial.println(" NTP [SERVER]         : Sync NTP Server(default pool.ntp.org)");
 #endif
+      Serial.println(" SD [DIR]             : SD Storage");
       Serial.println(" FORMAT [NVS|SPIFFS]  : Format Flash");
       Serial.println(" RESET                : Reset ESP32");
     }
@@ -1094,6 +1095,88 @@ class M5LiteDebug {
       }
     }
 
+    String fileSizeString(uint32_t val) {
+      if (1024 * 1024 * 1024 < val) {
+        // GB
+        return String(val / 1024.0 / 1024.0 / 1024.0, 2) + String(" GB");
+      } else if (1024 * 1024 < val) {
+        // MB
+        return String(val / 1024.0 / 1024.0, 2) + String(" MB");
+      } else if (1024 < val) {
+        // KB
+        return String(val / 1024.0, 2) + String(" KB");
+      } else {
+        // B
+        return String(val) + String("  B");
+      }
+    }
+
+    void dispSD(String command, String path1, String path2) {
+      Serial.printf("===============================================================\n");
+      Serial.println("SD");
+      Serial.printf("===============================================================\n");
+      sdcard_type_t cardType = SD.cardType();
+      String cardTypeName = "";
+      if (cardType == CARD_NONE) {
+        cardTypeName = "(NONE)";
+      } else if (cardType == CARD_MMC) {
+        cardTypeName = "MMC";
+      } else if (cardType == CARD_SD) {
+        cardTypeName = "SD";
+      } else if (cardType == CARD_SDHC) {
+        cardTypeName = "SDHC";
+      } else if (cardType == CARD_UNKNOWN) {
+        cardTypeName = "(UNKNOWN)";
+      }
+      uint32_t cardSize = SD.cardSize();
+      uint32_t totalBytes = SD.totalBytes();
+      uint32_t usedBytes = SD.usedBytes();
+
+      Serial.printf("Card Type   : %s\n", cardTypeName);
+      Serial.printf("Card Size   : %10s\n", fileSizeString(cardSize));
+      Serial.printf("Total Bytes : %10s\n", fileSizeString(totalBytes));
+      Serial.printf("Used Bytes  : %10s\n", fileSizeString(usedBytes));
+
+      if(SD.cardSize()==0){
+        // No SD
+        return;
+      }
+
+      if (command == "DIR") {
+        if (path1 == "") {
+          path1 = "/";
+        }
+        Serial.println();
+        Serial.println("[DIR " + path1 + "]");
+
+        File root = SD.open(path1);
+        if (root) {
+          File file = root.openNextFile();
+          while (file) {
+            time_t t = file.getLastWrite();
+            struct tm *tm_t = localtime(&t);
+            Serial.printf("%04d-%02d-%02d %02d:%02d:%02d ", tm_t->tm_year + 1900, tm_t->tm_mon, tm_t->tm_mday, tm_t->tm_hour, tm_t->tm_min, tm_t->tm_sec);
+            if (file.isDirectory()) {
+              Serial.print("<DIR>");
+              Serial.print("           ");
+              Serial.println(file.name());
+            } else {
+              // ファイル名とファイルサイズを出力
+              Serial.print("     ");
+              Serial.printf("%10s ", fileSizeString(file.size()));
+              Serial.println(file.name());
+            }
+            file = root.openNextFile();
+          }
+        }
+      }
+
+      Serial.println("");
+      Serial.println("[USAGE]");
+      Serial.println(" SD            : SD Info");
+      Serial.println(" SD DIR [PATH] : Dir Info(default /)");
+    }
+
     void update() {
       while (Serial.available()) {
         char input[256];
@@ -1106,6 +1189,8 @@ class M5LiteDebug {
         String command2 = command0;
         command0 = strtok(NULL, " ");
         String command3 = command0;
+        command0 = strtok(NULL, " ");
+        String command4 = command0;
 
         if (command == "") {
           // Skip
@@ -1129,6 +1214,8 @@ class M5LiteDebug {
           dispI2c();
         } else if (command == "FORMAT") {
           formatStorage(command2);
+        } else if (command == "SD") {
+          dispSD(command2, command3, command4);
 #ifdef WiFi_h
         } else if (command == "WIFI") {
           connectWiFi(command2, command3);
