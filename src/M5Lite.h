@@ -1,6 +1,10 @@
 #ifndef __M5Lite_H__
 #define __M5Lite_H__
 
+#include "SPIFFS.h"
+#include <Preferences.h>
+#include "nvs_flash.h"
+
 #define LGFX_M5STACK          // M5Stack
 #define LGFX_M5STICKC         // M5Stick C
 #define LGFX_TTGO_TWATCH      // TTGO T-Watch
@@ -224,6 +228,7 @@ class M5LiteBase {
       Debug._Beep = &Beep;
       Debug._dis = &dis;
       Debug._Touch = &Touch;
+      Debug._preferences = &preferences;
       Ex._Lcd = &Lcd;
       Ex._Axp = &Axp;
       Ex._BtnA = &BtnA;
@@ -239,10 +244,15 @@ class M5LiteBase {
       Ex._dis = &dis;
       Ex._Touch = &Touch;
       Ex._Debug = &Debug;
+      Ex._preferences = &preferences;
 
       Ex.setPin(M5_LED);
 
       Touch.setLcd(&Lcd);
+
+      SPIFFS.begin();
+
+      Imu.Init();
 
       if (SerialEnable) {
         Serial.println(" initializing...OK");
@@ -282,6 +292,7 @@ class M5LiteBase {
     I2C_BMA423 bma423 = I2C_BMA423(I2C_BMA423_DEFAULT_ADDRESS, Wire1);
     I2C_AXP192 axp192 = I2C_AXP192(I2C_AXP192_DEFAULT_ADDRESS, Wire1);
     I2C_IP5306 ip5306 = I2C_IP5306(I2C_IP5306_DEFAULT_ADDRESS, Wire1);
+    Preferences preferences = Preferences();
 };
 
 M5LiteBase M5Lite;

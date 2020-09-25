@@ -535,49 +535,58 @@ class M5LiteDebug {
     M5LiteSpeaker *_Beep;
     M5LiteLED *_dis;
     M5LiteTouch *_Touch;
+    Preferences *_preferences;
 
     void dispHelp(void) {
+      Serial.println("===============================================================");
       Serial.println("M5Lite Debug Command List");
-      Serial.println(" ?           : This print");
-      Serial.println(" INFO        : Print Info");
-      Serial.println(" AXP192      : AXP192 Info");
-      Serial.println(" IMU         : IMU Info");
-      Serial.println(" RTC         : RTC Info");
-      Serial.println(" MEM         : Memory Info");
-      Serial.println(" GPIO        : GPIO Info");
-      Serial.println(" I2C         : I2C Scan");
+      Serial.println("===============================================================");
+      Serial.println(" ?                    : This print");
+      Serial.println(" INFO                 : Print Info");
+      Serial.println(" AXP192               : AXP192 Info");
+      Serial.println(" IMU                  : IMU Info");
+      Serial.println(" RTC                  : RTC Info");
+      Serial.println(" MEM                  : Memory Info");
+      Serial.println(" GPIO                 : GPIO Info");
+      Serial.println(" I2C                  : I2C Scan");
 #ifdef WiFi_h
-      Serial.println(" WIFI        : Connect Wi-Fi(Last SSID & Key)");
-      Serial.println(" NTP         : Sync NTP Server");
+      Serial.println(" WIFI [SSID] [KEY]    : Connect Wi-Fi(default Last SSID & Key)");
+      Serial.println(" NTP [SERVER]         : Sync NTP Server(default pool.ntp.org)");
 #endif
-      Serial.println(" RESET       : Reset ESP32");
+      Serial.println(" FORMAT [NVS|SPIFFS]  : Format Flash");
+      Serial.println(" RESET                : Reset ESP32");
     }
 
     void dispAxp192(void) {
       // AXP192
       if (_Axp->enable) {
-        Serial.printf(" AXP192      : Battery\n");
-        Serial.printf("                Temp :%6.1f C\n", _Axp->GetTempInAXP192());    // AXP192 Internal temperature
-        Serial.printf("                V    :%6.3f V\n", _Axp->GetBatVoltage());    // Battery Voltage(3.0V-4.2V)
-        Serial.printf("                I    :%6.1f mA\n", _Axp->GetBatCurrent());   // Battery Current(+:charge, -:decharge)
+        Serial.printf("===============================================================\n");
+        Serial.printf("AXP192\n");
+        Serial.printf("===============================================================\n");
+        Serial.printf("Battery\n");
+        Serial.printf(" Temp :%6.1f C\n", _Axp->GetTempInAXP192());    // AXP192 Internal temperature
+        Serial.printf(" V    :%6.3f V\n", _Axp->GetBatVoltage());    // Battery Voltage(3.0V-4.2V)
+        Serial.printf(" I    :%6.1f mA\n", _Axp->GetBatCurrent());   // Battery Current(+:charge, -:decharge)
 
-        Serial.printf("               ASP(ESP32)\n");
-        Serial.printf("                V    :%6.3f V\n", _Axp->GetAPSVoltage());    // ESP32 Voltage
+        Serial.printf("ASP(ESP32)\n");
+        Serial.printf(" V    :%6.3f V\n", _Axp->GetAPSVoltage());    // ESP32 Voltage
 
-        Serial.printf("               VBus(USB)\n");
-        Serial.printf("                V    :%6.3f V\n", _Axp->GetVBusVoltage());   // USB Voltage
-        Serial.printf("                I    :%6.1f mA\n", _Axp->GetVBusCurrent());  // USB Current
+        Serial.printf("VBus(USB)\n");
+        Serial.printf(" V    :%6.3f V\n", _Axp->GetVBusVoltage());   // USB Voltage
+        Serial.printf(" I    :%6.1f mA\n", _Axp->GetVBusCurrent());  // USB Current
 
-        Serial.printf("               VIN(5V-In)\n");
-        Serial.printf("                V    :%6.3f V\n", _Axp->GetVinVoltage());    // 5V IN Voltage
-        Serial.printf("                I    :%6.1f mA\n", _Axp->GetVinCurrent());   // 5V IN Current
+        Serial.printf("VIN(5V-In)\n");
+        Serial.printf(" V    :%6.3f V\n", _Axp->GetVinVoltage());    // 5V IN Voltage
+        Serial.printf(" I    :%6.1f mA\n", _Axp->GetVinCurrent());   // 5V IN Current
       } else {
-        Serial.printf(" AXP192      : (NONE)\n");
+        Serial.printf("AXP192      : (NONE)\n");
       }
     }
 
     void dispImu(void) {
-      Serial.printf(" IMU         : ");
+      Serial.printf("===============================================================\n");
+      Serial.printf("IMU\n");
+      Serial.printf("===============================================================\n");
       if (_Imu->imuType == M5LiteIMU::IMU_UNKNOWN) {
         Serial.println("(NONE)");
       } else if (_Imu->imuType == M5LiteIMU::IMU_SH200Q) {
@@ -586,45 +595,47 @@ class M5LiteDebug {
         _Imu->getAccelData(&ax, &ay, &az);
         _Imu->getGyroData(&gx, &gy, &gz);
         _Imu->getTempData(&t);
-        Serial.printf("               ACCEL\n");
-        Serial.printf("                X    :%11.6f\n", ax);
-        Serial.printf("                Y    :%11.6f\n", ay);
-        Serial.printf("                Z    :%11.6f\n", az);
-        Serial.printf("               GYRO\n");
-        Serial.printf("                X    :%11.6f\n", gx);
-        Serial.printf("                Y    :%11.6f\n", gy);
-        Serial.printf("                Z    :%11.6f\n", gz);
-        Serial.printf("               TEMP\n");
-        Serial.printf("                T    :%11.6f C\n", t);
+        Serial.printf(" ACCEL\n");
+        Serial.printf("  X    :%11.6f\n", ax);
+        Serial.printf("  Y    :%11.6f\n", ay);
+        Serial.printf("  Z    :%11.6f\n", az);
+        Serial.printf(" GYRO\n");
+        Serial.printf("  X    :%11.6f\n", gx);
+        Serial.printf("  Y    :%11.6f\n", gy);
+        Serial.printf("  Z    :%11.6f\n", gz);
+        Serial.printf(" TEMP\n");
+        Serial.printf("  T    :%11.6f C\n", t);
       } else if (_Imu->imuType == M5LiteIMU::IMU_MPU6886) {
         Serial.println("MPU6886(6-AXIS)");
         float ax, ay, az, gx, gy, gz , t;
         _Imu->getAccelData(&ax, &ay, &az);
         _Imu->getGyroData(&gx, &gy, &gz);
         _Imu->getTempData(&t);
-        Serial.printf("               ACCEL\n");
-        Serial.printf("                X    :%11.6f\n", ax);
-        Serial.printf("                Y    :%11.6f\n", ay);
-        Serial.printf("                Z    :%11.6f\n", az);
-        Serial.printf("               GYRO\n");
-        Serial.printf("                X    :%11.6f\n", gx);
-        Serial.printf("                Y    :%11.6f\n", gy);
-        Serial.printf("                Z    :%11.6f\n", gz);
-        Serial.printf("               TEMP\n");
-        Serial.printf("                T    :%11.6f C\n", t);
+        Serial.printf(" ACCEL\n");
+        Serial.printf("  X    :%11.6f\n", ax);
+        Serial.printf("  Y    :%11.6f\n", ay);
+        Serial.printf("  Z    :%11.6f\n", az);
+        Serial.printf(" GYRO\n");
+        Serial.printf("  X    :%11.6f\n", gx);
+        Serial.printf("  Y    :%11.6f\n", gy);
+        Serial.printf("  Z    :%11.6f\n", gz);
+        Serial.printf(" TEMP\n");
+        Serial.printf("  T    :%11.6f C\n", t);
       } else if (_Imu->imuType == M5LiteIMU::IMU_BMA423) {
         Serial.println("BMA423(3-AXIS:ACCEL)");
         float ax, ay, az;
         _Imu->getAccelData(&ax, &ay, &az);
-        Serial.printf("               ACCEL\n");
-        Serial.printf("                X    :%11.6f\n", ax);
-        Serial.printf("                Y    :%11.6f\n", ay);
-        Serial.printf("                Z    :%11.6f\n", az);
+        Serial.printf(" ACCEL\n");
+        Serial.printf("  X    :%11.6f\n", ax);
+        Serial.printf("  Y    :%11.6f\n", ay);
+        Serial.printf("  Z    :%11.6f\n", az);
       }
     }
 
     void dispRtc(void) {
-      Serial.printf(" RTC         : ");
+      Serial.printf("===============================================================\n");
+      Serial.printf("RTC\n");
+      Serial.printf("===============================================================\n");
       if (_Rtc->enable) {
         RTC_TimeTypeDef RTC_TimeStruct;
         RTC_DateTypeDef RTC_DateStruct;
@@ -704,21 +715,23 @@ class M5LiteDebug {
     }
 
     void dispInfo(void) {
-      Serial.println("M5Lite Info");
+      Serial.printf("===============================================================\n");
+      Serial.printf("M5Lite Info\n");
+      Serial.printf("===============================================================\n");
 
       // Mac Address
       uint8_t mac[6];
       esp_read_mac(mac, ESP_MAC_WIFI_STA);
-      Serial.printf(" Mac Address : %02X:%02X:%02X:%02X:%02X:%02X\n", mac[0], mac[1], mac[2], mac[3], mac[4], mac[5]);
+      Serial.printf("Mac Address : %02X:%02X:%02X:%02X:%02X:%02X\n", mac[0], mac[1], mac[2], mac[3], mac[4], mac[5]);
 
 #ifdef WiFi_h
       // IP Address
-      Serial.printf(" IP Address  : ");
+      Serial.printf("IP Address  : ");
       Serial.println(WiFi.localIP());
 #endif
 
       // Board
-      Serial.printf(" Board       : ");
+      Serial.printf("Board       : ");
       if (_Imu->board == lgfx::board_M5Stack) {
         // M5Stack
         Serial.println("M5Stack");
@@ -743,9 +756,9 @@ class M5LiteDebug {
       int width = _Lcd->width();
       int height = _Lcd->height();
       if (0 < width) {
-        Serial.printf(" LCD         : Width:%d, Height:%d\n", width, height);
+        Serial.printf("LCD         : Width:%d, Height:%d\n", width, height);
       } else {
-        Serial.printf(" LCD         : (NONE)\n");
+        Serial.printf("LCD         : (NONE)\n");
       }
 
       // RTC
@@ -753,13 +766,17 @@ class M5LiteDebug {
     }
 
 #ifdef WiFi_h
-    void connectWiFi() {
+    void connectWiFi(String ssid, String key) {
       Serial.printf("===============================================================\n");
       Serial.printf("Wi-Fi Connect\n");
       Serial.printf("===============================================================\n");
-      WiFi.begin();
+      if (ssid == "" && key == "") {
+        WiFi.begin();
+      } else {
+        WiFi.begin(ssid.c_str(), key.c_str());
+      }
       int i;
-      for (i = 0; i < 100 ; i++) {
+      for (i = 0; i < 50 ; i++) {
         if (WiFi.status() == WL_CONNECTED) {
           Serial.println("Connect");
           Serial.printf(" IP Address  : ");
@@ -769,24 +786,30 @@ class M5LiteDebug {
           Serial.print(".");
         }
 
-        delay(100);
+        delay(200);
       }
 
-      if (i == 100) {
+      if (i == 50) {
         Serial.println("TimeOut");
       }
     }
 
-    void syncNTP() {
+    void syncNTP(String server) {
       Serial.printf("===============================================================\n");
       Serial.printf("NTP Sync\n");
       Serial.printf("===============================================================\n");
       if (WiFi.status() == WL_CONNECTED) {
-        const char* ntpServer =  "ntp.jst.mfeed.ad.jp";
+        String ntpServer;
         // Set ntp time to local
-        configTime(9 * 3600, 0, ntpServer);
+        if (server != "") {
+          configTime(9 * 3600, 0, server.c_str());
+          ntpServer = server;
+        } else {
+          configTime(9 * 3600, 0, "pool.ntp.org");
+          ntpServer = "pool.ntp.org";
+        }
 
-        Serial.print(" NTP         : ");
+        Serial.print("NTP         : ");
         Serial.println(ntpServer);
 
         // Get local time
@@ -806,7 +829,7 @@ class M5LiteDebug {
           DateStruct.Year = timeInfo.tm_year + 1900;
           _Rtc->SetData(&DateStruct);
 
-          Serial.print(" Local Time  : ");
+          Serial.print("Local Time  : ");
           Serial.printf("%04d-%02d-%02d ", DateStruct.Year, DateStruct.Month, DateStruct.Date);
           Serial.printf("%02d:%02d:%02d\n", TimeStruct.Hours, TimeStruct.Minutes, TimeStruct.Seconds);
 
@@ -830,8 +853,7 @@ class M5LiteDebug {
       bool level: 1;
     } gpio_info_t;
 
-    gpio_info_t getPinMode(uint8_t pin)
-    {
+    gpio_info_t getPinMode(uint8_t pin) {
       gpio_info_t info = {};
 
       if (!digitalPinIsValid(pin)) {
@@ -1051,10 +1073,40 @@ class M5LiteDebug {
       }
     }
 
+    void formatStorage(String flash) {
+      Serial.printf("===============================================================\n");
+      Serial.println("Format Storage");
+      Serial.printf("===============================================================\n");
+      if (flash == "NVS") {
+        Serial.println("Start NVS Format");
+        if (nvs_flash_erase() == ESP_OK) {
+          Serial.println("NVS clear");
+        } else {
+          Serial.println("NVS not clear");
+        }
+        Serial.println("Finish NVS Format");
+      } else if (flash == "SPIFFS") {
+        Serial.println("Start SPIFFS Format");
+        SPIFFS.format();
+        Serial.println("Finish SPIFFS Format");
+      } else {
+        Serial.println("Unknown Storage");
+      }
+    }
+
     void update() {
       while (Serial.available()) {
+        char input[256];
         String command = Serial.readStringUntil('\n');
         command.trim();
+        strncpy(input, command.c_str(), sizeof(input) - 1);
+        char* command0 = strtok(input, " ");
+        command = command0;
+        command0 = strtok(NULL, " ");
+        String command2 = command0;
+        command0 = strtok(NULL, " ");
+        String command3 = command0;
+
         if (command == "") {
           // Skip
         } else if (command == "?") {
@@ -1075,11 +1127,13 @@ class M5LiteDebug {
           dispGpio();
         } else if (command == "I2C") {
           dispI2c();
+        } else if (command == "FORMAT") {
+          formatStorage(command2);
 #ifdef WiFi_h
         } else if (command == "WIFI") {
-          connectWiFi();
+          connectWiFi(command2, command3);
         } else if (command == "NTP") {
-          syncNTP();
+          syncNTP(command2);
 #endif
         } else {
           dispHelp();

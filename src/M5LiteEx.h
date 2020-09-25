@@ -23,6 +23,7 @@ class M5LiteEx {
     M5LiteLED *_dis;
     M5LiteDebug *_Debug;
     M5LiteTouch *_Touch;
+    Preferences *_preferences;
 
     void update(void) {
       _Touch->update();
@@ -83,7 +84,7 @@ class M5LiteEx {
       }
       now = state;
 
-      if (_ledPin == 100){
+      if (_ledPin == 100) {
         // AXP192
         _Axp->SetVibration(state);
       }
