@@ -541,21 +541,23 @@ class M5LiteDebug {
       Serial.println("===============================================================");
       Serial.println("M5Lite Debug Command List");
       Serial.println("===============================================================");
-      Serial.println(" ?                    : This print");
-      Serial.println(" INFO                 : Print Info");
-      Serial.println(" AXP192               : AXP192 Info");
-      Serial.println(" IMU                  : IMU Info");
-      Serial.println(" RTC                  : RTC Info");
-      Serial.println(" MEM                  : Memory Info");
-      Serial.println(" GPIO                 : GPIO Info");
-      Serial.println(" I2C                  : I2C Scan");
+      Serial.println(" ?                                 : This print");
+      Serial.println(" INFO                              : Print Info");
+      Serial.println(" AXP192                            : AXP192 Info");
+      Serial.println(" IMU                               : IMU Info");
+      Serial.println(" RTC                               : RTC Info");
+      Serial.println(" MEM                               : Memory Info");
+      Serial.println(" GPIO                              : GPIO Info");
+      Serial.println(" I2C                               : I2C Scan");
 #ifdef WiFi_h
-      Serial.println(" WIFI [SSID] [KEY]    : Connect Wi-Fi(default Last SSID & Key)");
-      Serial.println(" NTP [SERVER]         : Sync NTP Server(default pool.ntp.org)");
+      Serial.println(" WIFI [SSID] [KEY]                 : Connect Wi-Fi(default Last SSID & Key)");
+      Serial.println(" NTP [SERVER]                      : Sync NTP Server(default pool.ntp.org)");
 #endif
-      Serial.println(" SD [DIR]             : SD Storage");
-      Serial.println(" FORMAT [NVS|SPIFFS]  : Format Flash");
-      Serial.println(" RESET                : Reset ESP32");
+      Serial.println(" SD [DIR]                          : SD Storage");
+      Serial.println(" SPIFFS [DIR]                      : SPIFFS Storage");
+      Serial.println(" FORMAT [NVS|SPIFFS]               : Format Flash");
+      Serial.println(" SCREENSHOT [SD|SPIFFS] [FILENAME] : Screenshot 16bitBMP(default SD)");
+      Serial.println(" RESET                             : Reset ESP32");
     }
 
     void dispAxp192(void) {
@@ -1111,6 +1113,51 @@ class M5LiteDebug {
       }
     }
 
+    void dispSPIFFS(String command, String path1, String path2) {
+      Serial.printf("===============================================================\n");
+      Serial.printf("SPIFFS\n");
+      Serial.printf("===============================================================\n");
+      uint32_t totalBytes = SPIFFS.totalBytes();
+      uint32_t usedBytes = SPIFFS.usedBytes();
+
+      Serial.printf("Total Bytes : %10s\n", fileSizeString(totalBytes));
+      Serial.printf("Used Bytes  : %10s\n", fileSizeString(usedBytes));
+
+      if (command == "DIR") {
+        if (path1 == "") {
+          path1 = "/";
+        }
+        Serial.println();
+        Serial.println("[DIR " + path1 + "]");
+
+        File root = SPIFFS.open(path1);
+        if (root) {
+          File file = root.openNextFile();
+          while (file) {
+            time_t t = file.getLastWrite();
+            struct tm *tm_t = localtime(&t);
+            Serial.printf("%04d-%02d-%02d %02d:%02d:%02d ", tm_t->tm_year + 1900, tm_t->tm_mon + 1, tm_t->tm_mday, tm_t->tm_hour, tm_t->tm_min, tm_t->tm_sec);
+            if (file.isDirectory()) {
+              Serial.print("<DIR>");
+              Serial.print("           ");
+              Serial.println(file.name());
+            } else {
+              // ファイル名とファイルサイズを出力
+              Serial.print("     ");
+              Serial.printf("%10s ", fileSizeString(file.size()));
+              Serial.println(file.name());
+            }
+            file = root.openNextFile();
+          }
+        }
+      }
+
+      Serial.println("");
+      Serial.println("[USAGE]");
+      Serial.println(" SPIFFS            : SPIFFS Info");
+      Serial.println(" SPIFFS DIR [PATH] : Dir Info(default /)");
+    }
+
     void dispSD(String command, String path1, String path2) {
       Serial.printf("===============================================================\n");
       Serial.println("SD");
@@ -1137,7 +1184,7 @@ class M5LiteDebug {
       Serial.printf("Total Bytes : %10s\n", fileSizeString(totalBytes));
       Serial.printf("Used Bytes  : %10s\n", fileSizeString(usedBytes));
 
-      if(SD.cardSize()==0){
+      if (SD.cardSize() == 0) {
         // No SD
         return;
       }
@@ -1155,7 +1202,7 @@ class M5LiteDebug {
           while (file) {
             time_t t = file.getLastWrite();
             struct tm *tm_t = localtime(&t);
-            Serial.printf("%04d-%02d-%02d %02d:%02d:%02d ", tm_t->tm_year + 1900, tm_t->tm_mon, tm_t->tm_mday, tm_t->tm_hour, tm_t->tm_min, tm_t->tm_sec);
+            Serial.printf("%04d-%02d-%02d %02d:%02d:%02d ", tm_t->tm_year + 1900, tm_t->tm_mon + 1, tm_t->tm_mday, tm_t->tm_hour, tm_t->tm_min, tm_t->tm_sec);
             if (file.isDirectory()) {
               Serial.print("<DIR>");
               Serial.print("           ");
@@ -1175,6 +1222,151 @@ class M5LiteDebug {
       Serial.println("[USAGE]");
       Serial.println(" SD            : SD Info");
       Serial.println(" SD DIR [PATH] : Dir Info(default /)");
+    }
+
+    void screenshot(fs::FS &fs, String filename) {
+      Serial.printf("===============================================================\n");
+      Serial.printf("SCREENSHOT\n");
+      Serial.printf("===============================================================\n");
+
+      if (&fs == &SD) {
+        Serial.printf("Storage  : SD\n");
+      }
+      if (&fs == &SPIFFS) {
+        Serial.printf("Storage  : SPIFFS\n");
+      }
+
+      Serial.printf("filename : %s\n", filename.c_str());
+
+      File file = fs.open(filename, FILE_WRITE);
+      if (!file) {
+        Serial.printf("file not open!\n");
+      }
+
+      uint8_t headSize = 66;
+      uint16_t width = _Lcd->width();
+      uint16_t height = _Lcd->height();
+      uint16_t dataSize = width * height * 2;
+      uint16_t fileSize = headSize + dataSize;
+      uint16_t rMask = 0b1111100000000000;
+      uint16_t gMask = 0b0000011111100000;
+      uint16_t bMask = 0b0000000000011111;
+
+      // BMP Header
+      file.write('B');
+      file.write('M');
+
+      // fileSize
+      file.write((uint8_t)(fileSize & 0xff));
+      file.write((uint8_t)(fileSize >> 8));
+      file.write(0x00);
+      file.write(0x00);
+
+      // Reserve
+      file.write(0x00);
+      file.write(0x00);
+      file.write(0x00);
+      file.write(0x00);
+
+      // headSize
+      file.write(headSize);
+      file.write(0x00);
+      file.write(0x00);
+      file.write(0x00);
+
+      // infoSize
+      file.write(0x28);
+      file.write(0x00);
+      file.write(0x00);
+      file.write(0x00);
+
+      // width
+      file.write((uint8_t)(width & 0xff));
+      file.write((uint8_t)(width >> 8));
+      file.write(0x00);
+      file.write(0x00);
+
+      // height
+      file.write((uint8_t)(height & 0xff));
+      file.write((uint8_t)(height >> 8));
+      file.write(0x00);
+      file.write(0x00);
+
+      // plane
+      file.write(0x01);
+      file.write(0x00);
+
+      // bit/pixel
+      file.write(16);
+      file.write(0x00);
+
+      // compression
+      file.write(0x00);
+      file.write(0x00);
+      file.write(0x00);
+      file.write(0x00);
+
+      // dataSize
+      file.write((uint8_t)(dataSize & 0xff));
+      file.write((uint8_t)(dataSize >> 8));
+      file.write(0x00);
+      file.write(0x00);
+
+      // Horizontal resolution
+      file.write(0x00);
+      file.write(0x00);
+      file.write(0x00);
+      file.write(0x00);
+
+      // Vertical resolution
+      file.write(0x00);
+      file.write(0x00);
+      file.write(0x00);
+      file.write(0x00);
+
+      // Color Size
+      file.write(0x00);
+      file.write(0x00);
+      file.write(0x00);
+      file.write(0x00);
+
+      // Number of important colors
+      file.write(0x00);
+      file.write(0x00);
+      file.write(0x00);
+      file.write(0x00);
+
+      // R MASK
+      file.write((uint8_t)(rMask & 0xff));
+      file.write((uint8_t)(rMask >> 8));
+      file.write(0x00);
+      file.write(0x00);
+
+      // G MASK
+      file.write((uint8_t)(gMask & 0xff));
+      file.write((uint8_t)(gMask >> 8));
+      file.write(0x00);
+      file.write(0x00);
+
+      // B MASK
+      file.write((uint8_t)(bMask & 0xff));
+      file.write((uint8_t)(bMask >> 8));
+      file.write(0x00);
+      file.write(0x00);
+
+      // DATA
+      bool swap = _Lcd->getSwapBytes();
+      _Lcd->setSwapBytes(true);
+      for (int y = 0; y < height; y++) {
+        uint16_t pl[width];
+        _Lcd->readRect(0, height - y - 1, width, 1, pl);
+        file.write((uint8_t *)pl, width * 2);
+      }
+      _Lcd->setSwapBytes(swap);
+
+      file.close();
+
+      Serial.println("Finish!");
     }
 
     void update() {
@@ -1214,8 +1406,17 @@ class M5LiteDebug {
           dispI2c();
         } else if (command == "FORMAT") {
           formatStorage(command2);
+        } else if (command == "SPIFFS") {
+          dispSPIFFS(command2, command3, command4);
         } else if (command == "SD") {
           dispSD(command2, command3, command4);
+        } else if (command == "SCREENSHOT") {
+          String filename = "/screenshot.bmp";
+          if (command2 == "SPIFFS") {
+            screenshot(SPIFFS, filename);
+          } else {
+            screenshot(SD, filename);
+          }
 #ifdef WiFi_h
         } else if (command == "WIFI") {
           connectWiFi(command2, command3);

@@ -2,6 +2,7 @@
 #define __M5Lite_H__
 
 #include <Arduino.h>
+#include <core_version.h>
 #include <Wire.h>
 #include <SPI.h>
 #include "FS.h"
@@ -69,8 +70,12 @@ class M5LiteBase {
         Serial.begin(115200);
         Serial.flush();
         delay(200);
-        Serial.print("M5Lite");
       }
+
+      Serial.println("===============================================================");
+      Serial.println("M5Lite Initializing");
+      Serial.println("===============================================================");
+      Serial.printf ("ESP32                 : %s\n", ARDUINO_ESP32_RELEASE);
 
       Axp.setAXP192(&axp192);
       Mpu6886.setMPU6886(&mpu6886);
@@ -91,7 +96,6 @@ class M5LiteBase {
         Imu.board = Ex.board;
         if (Ex.board == lgfx::board_M5Stack) {
           // M5Stack
-          Serial.print("(M5Stack)");
           M5_IR             = -1;
           M5_LED            = -1;
           BUTTON_A_PIN      = 39;
@@ -107,7 +111,6 @@ class M5LiteBase {
           Wire1.begin(21, 22);
         } else if (Ex.board == lgfx::board_M5StackCore2) {
           // M5Stack Core2
-          Serial.print("(M5Stack Core2)");
           M5_IR             = -1;
           M5_LED            = 100;
           BUTTON_A_PIN      = 101;
@@ -127,7 +130,6 @@ class M5LiteBase {
           Wire1.begin(21, 22);
         } else if (Ex.board == lgfx::board_M5StickC) {
           // M5StickC
-          Serial.print("(M5StickC)");
           M5_IR             =  9;
           M5_LED            = 10;
           BUTTON_A_PIN      = 37;
@@ -143,7 +145,6 @@ class M5LiteBase {
           Wire1.begin(21, 22);
         } else if (Ex.board == lgfx::board_M5StickCPlus) {
           // M5StickC Plus
-          Serial.print("(M5StickC Plus)");
           M5_IR             =  9;
           M5_LED            = 10;
           BUTTON_A_PIN      = 37;
@@ -159,7 +160,6 @@ class M5LiteBase {
           Wire1.begin(21, 22);
         } else if (Ex.board == lgfx::board_TTGO_TWatch) {
           // TTGO T-Watch
-          Serial.print("(LILYGO TTGO T-Watch)");
           M5_IR             = -1;
           M5_LED            = -1;
           BUTTON_A_PIN      = 36;
@@ -174,7 +174,6 @@ class M5LiteBase {
           Wire1.begin(21, 22);
         } else if (Ex.board == lgfx::board_unknown) {
           // ATOM
-          Serial.print("(M5Stack ATOM)");
           M5_IR             = 12;
           M5_LED            = -1;
           BUTTON_A_PIN      = 39;
@@ -194,8 +193,6 @@ class M5LiteBase {
           Wire1.begin(25, 21, 10000);
         } else {
           // Other
-          Serial.print("(Other)");
-
           Wire1.begin(-1, -1);
         }
       } else {
@@ -256,15 +253,122 @@ class M5LiteBase {
       Ex._preferences = &preferences;
 
       Ex.setPin(M5_LED);
+      Ex.setLed(false);
 
       Touch.setLcd(&Lcd);
 
-      SPIFFS.begin();
-
       Imu.Init();
 
+      // Mac Address
+      uint8_t mac[6];
+      esp_read_mac(mac, ESP_MAC_WIFI_STA);
+      Serial.printf ("Mac Address           : %02X:%02X:%02X:%02X:%02X:%02X\n", mac[0], mac[1], mac[2], mac[3], mac[4], mac[5]);
+
+      // Board
+      Serial.printf ("Board                 : ");
+      if (Imu.board == lgfx::board_M5Stack) {
+        // M5Stack
+        Serial.println("M5Stack");
+      } else if (Imu.board == lgfx::board_M5StackCore2) {
+        // M5Stack Core2
+        Serial.println("M5Stack Core2");
+      } else if (Imu.board == lgfx::board_M5StickC) {
+        // M5StickC
+        Serial.println("M5StickC");
+      } else if (Imu.board == lgfx::board_M5StickCPlus) {
+        // M5StickC Plus
+        Serial.println("M5StickC Plus");
+      } else if (Imu.board == lgfx::board_TTGO_TWatch) {
+        // TTGO T-Watch
+        Serial.println("LILYGO TTGO T-Watch");
+      } else if (Imu.board == lgfx::board_unknown) {
+        // ATOM
+        Serial.println("M5Stack ATOM");
+      }
+
+      // LCD
+      int width = Lcd.width();
+      int height = Lcd.height();
+      if (0 < width) {
+        Serial.printf ("LCD                   : Width:%d, Height:%d\n", width, height);
+      } else {
+        Serial.printf ("LCD                   : (NONE)\n");
+      }
+
+      // Touch
+      if (Touch.enable) {
+        Serial.printf ("Touch                 : Enable\n");
+      } else {
+        Serial.printf ("Touch                 : (NONE)\n");
+      }
+
+      // AXP192
+      if (Axp.enable) {
+        Serial.printf ("AXP192                : Enable\n");
+      } else {
+        Serial.printf ("AXP192                : (NONE)\n");
+      }
+
+      // IMU
+      Serial.printf ("IMU                   : ");
+      if (Imu.imuType == M5LiteIMU::IMU_UNKNOWN) {
+        Serial.println("(NONE)");
+      } else if (Imu.imuType == M5LiteIMU::IMU_SH200Q) {
+        Serial.println("SH200Q(6-AXIS)");
+      } else if (Imu.imuType == M5LiteIMU::IMU_MPU6886) {
+        Serial.println("MPU6886(6-AXIS)");
+      } else if (Imu.imuType == M5LiteIMU::IMU_BMA423) {
+        Serial.println("BMA423(3-AXIS:ACCEL)");
+      }
+
+      // RTC
+      if (Rtc.enable) {
+        RTC_TimeTypeDef RTC_TimeStruct;
+        RTC_DateTypeDef RTC_DateStruct;
+        Rtc.GetTime(&RTC_TimeStruct);
+        Rtc.GetData(&RTC_DateStruct);
+        struct tm dt;
+        dt.tm_year = RTC_DateStruct.Year - 1900;
+        dt.tm_mon = RTC_DateStruct.Month - 1;
+        dt.tm_mday  = RTC_DateStruct.Date;
+        dt.tm_hour = RTC_TimeStruct.Hours;
+        dt.tm_min  = RTC_TimeStruct.Minutes;
+        dt.tm_sec  = RTC_TimeStruct.Seconds;
+        struct timeval tv;
+        tv.tv_sec = mktime(&dt);
+        struct timezone tz;
+        tz.tz_minuteswest = 9 * 60; // Jp
+        tz.tz_dsttime = 0;
+        settimeofday(&tv, &tz);
+
+        Serial.printf ("RTC                   : ");
+        Serial.printf ("%04d-%02d-%02d ", RTC_DateStruct.Year, RTC_DateStruct.Month, RTC_DateStruct.Date);
+        Serial.printf ("%02d:%02d:%02d\n", RTC_TimeStruct.Hours, RTC_TimeStruct.Minutes, RTC_TimeStruct.Seconds);
+      } else {
+        Serial.printf ("RTC                   : (NONE)\n");
+      }
+
+      Serial.printf ("Local Time            : ");
+      time_t t = time(NULL);
+      struct tm *t_st;
+      t_st = localtime(&t);
+      Serial.printf ("%04d-%02d-%02d ", t_st->tm_year + 1900, t_st->tm_mon + 1, t_st->tm_mday);
+      Serial.printf ("%02d:%02d:%02d\n", t_st->tm_hour, t_st->tm_min, t_st->tm_sec);
+
+      if(!SPIFFS.begin()){
+        Serial.print("SPIFFS Format ... (please wait)");
+        SPIFFS.format();
+        Serial.println("Down");
+        ESP.restart();
+      }
+      uint32_t totalBytes = SPIFFS.totalBytes();
+      uint32_t usedBytes = SPIFFS.usedBytes();
+      Serial.printf ("SPIFFS Total Bytes    : %10s\n", Debug.fileSizeString(totalBytes));
+      Serial.printf ("SPIFFS Used Bytes     : %10s\n", Debug.fileSizeString(usedBytes));
+
       if (SerialEnable) {
-        Serial.println(" initializing...OK");
+        Serial.println();
+        Serial.println("Initializing ... Down\n");
       }
     }
 
