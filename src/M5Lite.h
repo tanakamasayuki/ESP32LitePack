@@ -10,6 +10,7 @@
 #include "SPIFFS.h"
 #include <Preferences.h>
 #include "nvs_flash.h"
+#include "lwip\sockets.h"
 
 #define LGFX_M5STACK          // M5Stack (Basic / Gray / Go / Fire)
 #define LGFX_M5STACKCORE2     // M5StackCore2

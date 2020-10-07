@@ -94,6 +94,10 @@ class M5LiteEx {
       _ledPin = ledPin;
     }
 
+    void screenshot(fs::FS &fs, String filename) {
+      _Debug->screenshot(fs, filename);
+    }
+
   private:
     int8_t _ledPin;
 };

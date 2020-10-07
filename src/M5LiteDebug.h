@@ -1411,7 +1411,19 @@ class M5LiteDebug {
         } else if (command == "SD") {
           dispSD(command2, command3, command4);
         } else if (command == "SCREENSHOT") {
-          String filename = "/screenshot.bmp";
+          String filename;
+          if (command3 != "") {
+            filename = command3;
+          } else {
+            char name[40];
+            time_t t = time(NULL);
+            struct tm *t_st;
+            t_st = localtime(&t);
+            snprintf(name, 40, "/screenshot_%04d-%02d-%02d_%02d-%02d-%02d.bmp",
+                     t_st->tm_year + 1900, t_st->tm_mon + 1, t_st->tm_mday,
+                     t_st->tm_hour, t_st->tm_min, t_st->tm_sec);
+            filename = name;
+          }
           if (command2 == "SPIFFS") {
             screenshot(SPIFFS, filename);
           } else {
