@@ -30,10 +30,6 @@ class M5LiteEx {
       _BtnA->read();
       _BtnB->read();
       _BtnC->read();
-      update2();
-    }
-
-    void update2(void) {
       _Beep->update();
       _Debug->update();
     }
@@ -51,7 +47,7 @@ class M5LiteEx {
           ::delay(ms);
           ms = 0;
         }
-        update2();
+        update();
       }
     }
 

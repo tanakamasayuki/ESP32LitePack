@@ -17,6 +17,7 @@ class M5LiteButton {
       _time = millis();
       _lastState = _state;
       _changed = 0;
+      _clear = 0;
       _hold_time = -1;
       _lastTime = _time;
       _lastChange = _time;
@@ -39,7 +40,7 @@ class M5LiteButton {
         return _axp192->getPekPress() != 0;
       } else if (_pin == 101) {
         // Touch A
-        TouchPoint_t p = _Touch->getPressPoint();
+        TouchPoint_t p = _Touch->getPressPointRaw();
         if (240 < p.y && p.x <= 106) {
           return true;
         } else {
@@ -47,7 +48,7 @@ class M5LiteButton {
         }
       } else if (_pin == 102) {
         // Touch B
-        TouchPoint_t p = _Touch->getPressPoint();
+        TouchPoint_t p = _Touch->getPressPointRaw();
         if (240 < p.y && 106 < p.x && p.x < 212) {
           return true;
         } else {
@@ -55,7 +56,7 @@ class M5LiteButton {
         }
       } else if (_pin == 103) {
         // Touch C
-        TouchPoint_t p = _Touch->getPressPoint();
+        TouchPoint_t p = _Touch->getPressPointRaw();
         if (240 < p.y && 212 <= p.x) {
           return true;
         } else {
@@ -73,12 +74,17 @@ class M5LiteButton {
       static uint32_t nowtime;
       static uint8_t pinVal;
 
+      if (_clear) {
+        _changed = 0;
+        _clear = 0;
+      }
+
       nowtime = millis();
       pinVal = getPin();
+
       if (nowtime - _lastChange < _dbTime) {
         _lastTime = _time;
         _time = nowtime;
-        _changed = 0;
         return _state;
       } else {
         _lastTime = _time;
@@ -91,35 +97,49 @@ class M5LiteButton {
           if (_state) {
             _pressTime = _time;
           }
-        } else {
-          _changed = 0;
         }
         return _state;
       }
     }
+
     uint8_t isPressed() {
+      _clear = 1;
       return _state == 0 ? 0 : 1;
     }
+
     uint8_t isReleased() {
+      _clear = 1;
       return _state == 0 ? 1 : 0;
     }
+
     uint8_t wasPressed() {
+      _clear = 1;
       return _state && _changed;
     }
+
     uint8_t wasReleased() {
+      _clear = 1;
       return !_state && _changed && millis() - _pressTime < _hold_time;
     }
+
     uint8_t pressedFor(uint32_t ms) {
+      _clear = 1;
       return (_state == 1 && _time - _lastChange >= ms) ? 1 : 0;
     }
+
     uint8_t releasedFor(uint32_t ms) {
+      _clear = 1;
       return (_state == 0 && _time - _lastChange >= ms) ? 1 : 0;
     }
+
     uint8_t wasReleasefor(uint32_t ms) {
+      _clear = 1;
       _hold_time = ms;
       return !_state && _changed && millis() - _pressTime >= ms;
     }
+
     uint32_t lastChange() {
+      _clear = 1;
       return _lastChange;
     }
 
@@ -130,6 +150,7 @@ class M5LiteButton {
     uint8_t _state;
     uint8_t _lastState;
     uint8_t _changed;
+    uint8_t _clear;
     uint32_t _time;
     uint32_t _lastTime;
     uint32_t _lastChange;

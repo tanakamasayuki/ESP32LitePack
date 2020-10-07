@@ -2,8 +2,6 @@
 #include "M5Lite.h"
 
 void setup() {
-  delay(1000);
-
   M5Lite.begin();
 
   M5Lite.Lcd.setCursor(0, 0, 1);
