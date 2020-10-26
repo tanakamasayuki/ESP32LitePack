@@ -1120,8 +1120,10 @@ class M5LiteDebug {
       uint32_t totalBytes = SPIFFS.totalBytes();
       uint32_t usedBytes = SPIFFS.usedBytes();
 
-      Serial.printf("Total Bytes : %10s\n", fileSizeString(totalBytes));
-      Serial.printf("Used Bytes  : %10s\n", fileSizeString(usedBytes));
+      String sizeString = fileSizeString(totalBytes);
+      Serial.printf("Total Bytes : %10s\n", sizeString.c_str());
+      sizeString = fileSizeString(usedBytes);
+      Serial.printf("Used Bytes  : %10s\n", sizeString.c_str());
 
       if (command == "DIR") {
         if (path1 == "") {
@@ -1144,7 +1146,8 @@ class M5LiteDebug {
             } else {
               // ファイル名とファイルサイズを出力
               Serial.print("     ");
-              Serial.printf("%10s ", fileSizeString(file.size()));
+              String sizeString = fileSizeString(file.size());
+              Serial.printf("%10s ", sizeString.c_str());
               Serial.println(file.name());
             }
             file = root.openNextFile();
@@ -1179,10 +1182,13 @@ class M5LiteDebug {
       uint32_t totalBytes = SD.totalBytes();
       uint32_t usedBytes = SD.usedBytes();
 
-      Serial.printf("Card Type   : %s\n", cardTypeName);
-      Serial.printf("Card Size   : %10s\n", fileSizeString(cardSize));
-      Serial.printf("Total Bytes : %10s\n", fileSizeString(totalBytes));
-      Serial.printf("Used Bytes  : %10s\n", fileSizeString(usedBytes));
+      Serial.printf("Card Type   : %s\n", cardTypeName.c_str());
+      String sizeString = fileSizeString(cardSize);
+      Serial.printf("Card Size   : %10s\n", sizeString.c_str());
+      sizeString = fileSizeString(totalBytes);
+      Serial.printf("Total Bytes : %10s\n", sizeString.c_str());
+      sizeString = fileSizeString(usedBytes);
+      Serial.printf("Used Bytes  : %10s\n", sizeString.c_str());
 
       if (SD.cardSize() == 0) {
         // No SD
@@ -1210,7 +1216,8 @@ class M5LiteDebug {
             } else {
               // ファイル名とファイルサイズを出力
               Serial.print("     ");
-              Serial.printf("%10s ", fileSizeString(file.size()));
+              String sizeString = fileSizeString(file.size());
+              Serial.printf("%10s ", sizeString.c_str());
               Serial.println(file.name());
             }
             file = root.openNextFile();

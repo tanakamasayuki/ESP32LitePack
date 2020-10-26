@@ -17,6 +17,8 @@ class M5LiteButton {
       _time = millis();
       _lastState = _state;
       _changed = 0;
+      _changedLow = 0;
+      _changedHigh = 0;
       _clear = 0;
       _hold_time = -1;
       _lastTime = _time;
@@ -76,6 +78,8 @@ class M5LiteButton {
 
       if (_clear) {
         _changed = 0;
+        _changedLow = 0;
+        _changedHigh = 0;
         _clear = 0;
       }
 
@@ -96,6 +100,9 @@ class M5LiteButton {
           _changed = 1;
           if (_state) {
             _pressTime = _time;
+            _changedHigh = 1;
+          } else {
+            _changedLow = 1;
           }
         }
         return _state;
@@ -114,12 +121,12 @@ class M5LiteButton {
 
     uint8_t wasPressed() {
       _clear = 1;
-      return _state && _changed;
+      return _changedHigh;
     }
 
     uint8_t wasReleased() {
       _clear = 1;
-      return !_state && _changed && millis() - _pressTime < _hold_time;
+      return _changedLow && millis() - _pressTime < _hold_time;
     }
 
     uint8_t pressedFor(uint32_t ms) {
@@ -150,6 +157,8 @@ class M5LiteButton {
     uint8_t _state;
     uint8_t _lastState;
     uint8_t _changed;
+    uint8_t _changedHigh;
+    uint8_t _changedLow;
     uint8_t _clear;
     uint32_t _time;
     uint32_t _lastTime;

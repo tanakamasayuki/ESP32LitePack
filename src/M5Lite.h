@@ -357,15 +357,20 @@ class M5LiteBase {
       Serial.printf ("%02d:%02d:%02d\n", t_st->tm_hour, t_st->tm_min, t_st->tm_sec);
 
       if(!SPIFFS.begin()){
+        Lcd.fillScreen(TFT_RED);
+        Lcd.println("SPIFFS Format ... (please wait)");
         Serial.print("SPIFFS Format ... (please wait)");
+        delay(100);
         SPIFFS.format();
         Serial.println("Down");
         ESP.restart();
       }
       uint32_t totalBytes = SPIFFS.totalBytes();
       uint32_t usedBytes = SPIFFS.usedBytes();
-      Serial.printf ("SPIFFS Total Bytes    : %10s\n", Debug.fileSizeString(totalBytes));
-      Serial.printf ("SPIFFS Used Bytes     : %10s\n", Debug.fileSizeString(usedBytes));
+      String sizeString = Debug.fileSizeString(totalBytes);
+      Serial.printf("SPIFFS Total Bytes    : %10s\n", sizeString.c_str());
+      sizeString = Debug.fileSizeString(usedBytes);
+      Serial.printf("SPIFFS Used Bytes     : %10s\n", sizeString.c_str());
 
       if (SerialEnable) {
         Serial.println();
