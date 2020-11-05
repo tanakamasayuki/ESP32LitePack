@@ -1308,7 +1308,7 @@ class M5LiteDebug {
       file.write(0x00);
 
       // compression
-      file.write(0x00);
+      file.write(0x03);
       file.write(0x00);
       file.write(0x00);
       file.write(0x00);
